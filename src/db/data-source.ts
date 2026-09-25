@@ -27,8 +27,8 @@ import { Booking2 } from "../entities/Booking2";
 import { BookingRoom } from "../entities/BookingRoom";
 import { BookingCustomer } from "../entities/BookingCustomer";
 import { ContactUs } from "../entities/ContactUs";
-import { Agent } from "../entities/Agent";
-import { GroupBooking } from "../entities/GroupBooking";
+import { RoomPriceV2 } from "../entities/RoomPrice2";
+import { BookingTajpark } from "../entities/BookingTajpark";
 
 dotenv.config();
 
@@ -50,7 +50,6 @@ export const AppDataSource = new DataSource({
   
   // Always use explicit imports for Vercel
   entities: [
-    Agent,
     Booking,
     City,
     Hotel,
@@ -76,7 +75,8 @@ export const AppDataSource = new DataSource({
     BookingRoom,
     BookingCustomer,
     ContactUs,
-    GroupBooking
+    RoomPriceV2,
+    BookingTajpark,
   ],
   
   migrations: [

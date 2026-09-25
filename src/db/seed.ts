@@ -443,7 +443,7 @@ const seedHotelExtras = async () => {
   }
 };
 
-// seedHotelExtras();
+seedHotelExtras();
 
 async function seedSeasonCodes() {
   try {
@@ -757,4 +757,4 @@ async function seedAdminUser() {
   }
 }
 
-seedAdminUser();
+// seedAdminUser();

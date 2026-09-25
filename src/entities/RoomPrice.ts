@@ -44,6 +44,15 @@ export class RoomPrice {
   @Column({ type: "date" })
   end_date: Date;
 
+  // Minimum stay 
+  @Column({ 
+    type: "int", 
+    nullable: true, 
+    default: 1,
+    comment: "Minimum stay days required for this price" 
+  })
+  minimum_stay: number | null;
+
   // Day type
   @Column({ 
     type: "varchar", 

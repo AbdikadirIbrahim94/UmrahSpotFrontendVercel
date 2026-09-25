@@ -4,6 +4,7 @@ import PostgresExportController from '../controllers/PostgresExportController';
 import { PricingController } from '../controllers/PricingController';
 import { ApiController } from '../controllers/ApiController';
 import { ContactUsController } from '../controllers/ContactUsController';
+import { TajApiController } from '../controllers/TajApiController';
 
 console.log("this file is running ;;;;;;;;;;s")
 const router = express.Router();
@@ -19,6 +20,14 @@ router.post("/get-hotels/:id/bookings", HotelController.createBooking);
 router.get("/hotel-extras", HotelController.getHotelExtras);
 router.get("/get-deals-rooms/:id", ApiController.get_deals_rooms)
 router.get("/get-hotels-rooms/:id", ApiController.get_hotel_rooms)
+
+router.post("/room-search", TajApiController.search);
+router.post("/room-search-two", TajApiController.search_two);
+router.get("/occupancy/:room_option_id", TajApiController.search_room);
+router.post("/search-room", TajApiController.search_rooms_three);
+router.get("/taj-deals", TajApiController.taj_deals);
+router.get("/taj-deals/:id", TajApiController.taj_deal_detail);
+router.get("/room/:room_name_id", TajApiController.get_room_by_name_id);
 
 
 // Export code 
@@ -47,5 +56,12 @@ router.post("/booking/details",ApiController.booking_detail);
 // router.get("/customer-email",ApiController.customer_email);
 
 router.post('/contact-us', ContactUsController.create);
+
+router.post('/create-payment-intent-tajpark', ApiController.create_payment_intent_tajpark);
+router.post(
+  '/stripe-webhook-tajpark',
+  express.raw({ type: 'application/json' }),
+  ApiController.stripe_webhook_tajpark
+);
 
 export default router;

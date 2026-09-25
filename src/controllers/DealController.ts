@@ -29,6 +29,7 @@ export class DealController {
                 return res.status(500).json({error:  "Deal Id is missing"});
             }
              const hotels = await AppDataSource.getRepository(Hotel).find({
+                where:{id: 32},
                 order: { name: "ASC" },
                 });
 

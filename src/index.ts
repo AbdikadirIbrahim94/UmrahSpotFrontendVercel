@@ -3,7 +3,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { initializeDataSource } from "./db/data-source";
 import apiRoutes from "./routes/api";
-import agentRoutes from "./routes/agent"
 import path from "path";
 import { join } from "path";
 import { readFileSync } from "fs";
@@ -12,7 +11,6 @@ import YAML from "yaml";
 import portalRoutes from "./routes/portal.js";
 import { existsSync } from "fs";
 import session from "express-session";
-import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -63,25 +61,27 @@ if (swaggerFilePath) {
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-
-
-
 // ✅ Middleware
-app.use(express.json());
-// app.use(cors()); 
-app.use(
-  cors({
-    origin: [
-      "http://99.81.148.100",
-      "http://99.81.148.100:3000",
-      "http://localhost:3000"
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
-app.use(cookieParser());
+// app.use(express.json());
+app.use((req, res, next) => {
+  if (req.originalUrl === '/api/stripe-webhook-tajpark') {
+    return next(); // skip JSON parsing — this route needs the raw body
+  }
+  express.json()(req, res, next);
+});
+app.use(cors()); 
+// app.use(
+//   cors({
+//     origin: [
+//       "http://99.81.148.100",
+//       "http://99.81.148.100:3000",
+//     ],
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     credentials: true,
+//   })
+// );
+
 
 app.set('trust proxy', true);
 
@@ -148,20 +148,31 @@ console.log("finding route ;;;;;")
 // ✅ Mount routes
 app.use("/api", apiRoutes);
 app.use("/portal", portalRoutes);
-app.use("/agent",agentRoutes) 
+
 // ✅ For local development
-if (process.env.NODE_ENV !== "production") {
-  initializeDataSource()
-    .then(() => {
-      app.listen(PORT, () => {
-        console.log(`🚀 Server running on port ${PORT}`);
-      });
-    })
-    .catch((err) => {
-      console.error("❌ Database connection failed:", err);
-      process.exit(1);
+// if (process.env.NODE_ENV !== "production") {
+//   initializeDataSource()
+//     .then(() => {
+//       app.listen(PORT, () => {
+//         console.log(`🚀 Server running on port ${PORT}`);
+//       });
+//     })
+//     .catch((err) => {
+//       console.error("❌ Database connection failed:", err);
+//       process.exit(1);
+//     });
+// }
+
+initializeDataSource()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
     });
-}
+  })
+  .catch((err) => {
+    console.error("❌ Database connection failed:", err);
+    process.exit(1);
+  });
 
 // ✅ Export for Vercel serverless
 export default app;

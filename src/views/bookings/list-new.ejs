@@ -1,0 +1,146 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Taj Park Bookings</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/portal/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active">Bookings</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title">All Bookings</h5>
+              <div class="card-title">
+                <span class="badge bg-primary text-white">Total: <%= total %></span>
+              </div>
+            </div>
+
+            <% if (bookings.length === 0) { %>
+              <div class="text-center py-4">
+                <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                <p class="text-muted mt-2">No bookings yet.</p>
+              </div>
+            <% } else { %>
+              <table class="table" id="booking_table">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Guest</th>
+                    <th scope="col">Rooms</th>
+                    <th scope="col">Check-in</th>
+                    <th scope="col">Check-out</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Status</th>
+                    <!-- <th scope="col">Stripe ID</th> -->
+                    <th scope="col">Booked On</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% bookings.forEach(function(b) { %>
+                    <tr style="cursor:pointer" onclick="window.location.href='/portal/booking/<%= b.id %>'">
+                      <td>#<%= b.id %></td>
+                      <td style="max-width: 12rem;">
+                        <strong><%= b.guest_name %></strong><br>
+                        <small class="text-muted" style="font-size:0.7rem;"><%= b.guest_email %></small>
+                      </td>
+                      <td>
+                        <% b.rooms.forEach(function(r) { %>
+                          <div class="mb-1"><%= r.room_name %> <small class="text-muted">(<%= r.check_in %> &rarr; <%= r.check_out %>)</small></div>
+                        <% }); %>
+                      </td>
+                      <td><%= b.check_in %></td>
+                      <td><%= b.check_out %></td>
+                      <td><strong>$<%= parseFloat(b.amount_paid).toFixed(2) %></strong></td>
+                      <td>
+                        <% if (b.status === 'confirmed') { %>
+                          <span class="badge bg-success">Confirmed</span>
+                        <% } else if (b.status === 'failed') { %>
+                          <span class="badge bg-danger">Failed</span>
+                        <% } else { %>
+                          <span class="badge bg-warning">Pending</span>
+                        <% } %>
+                      </td>
+                      <!-- <td><small class="text-muted"><%= b.stripe_payment_id || '—' %></small></td> -->
+                      <td><small class="text-muted"><%= new Date(b.created_at).toLocaleString() %></small></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteBooking(<%= b.id %>, '<%= b.guest_name %>')" title="Delete Booking">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+
+              <% if (totalPages > 1) { %>
+                <nav class="mt-3">
+                  <ul class="pagination justify-content-center">
+                    <% for (let p = 1; p <= totalPages; p++) { %>
+                      <li class="page-item <%= p === currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= p %>"><%= p %></a>
+                      </li>
+                    <% } %>
+                  </ul>
+                </nav>
+              <% } %>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<%- include('../partials/components/footer.ejs'); %>
+<script>
+function deleteBooking(id, guestName) {
+  Swal.fire({
+    title: 'Delete Booking?',
+    text: `Are you sure you want to delete the booking for ${guestName}? This cannot be undone.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`/portal/booking/${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          Swal.fire({
+            title: 'Deleted!',
+            text: 'The booking has been deleted.',
+            icon: 'success'
+          }).then(() => {
+            location.reload();
+          });
+        } else {
+          Swal.fire('Error', data.message || 'Failed to delete booking', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Error', 'Failed to delete booking', 'error');
+      });
+    }
+  });
+}
+</script>
+</body>
+</html>

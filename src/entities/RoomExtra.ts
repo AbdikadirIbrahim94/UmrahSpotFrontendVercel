@@ -6,7 +6,8 @@ export class RoomExtra {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Room, (room) => room, { onDelete: "CASCADE" })
+  // @ManyToOne(() => Room, (room) => room, { onDelete: "CASCADE" })
+  @ManyToOne(() => Room, (room) => room.room_extras, { onDelete: "CASCADE" })
   @JoinColumn({ name: "room_id" })
   room: Room;
 

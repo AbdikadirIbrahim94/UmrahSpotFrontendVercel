@@ -10,7 +10,7 @@
         </a>
       </li><!-- End Dashboard Nav -->
 
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link  <%= (current_path === "/portal/city") || (current_path === "/portal/city/add")  ? '' : 'collapsed' %>" data-bs-target="#topic-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-book"></i><span>City</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -26,21 +26,21 @@
             </a>
           </li>
         </ul>
-      </li><!-- End Tables Nav -->
+      </li> -->
 
       <li class="nav-item">
         <a class="nav-link  <%= (current_path.startsWith('/portal/hotel'))  ? '' : 'collapsed' %>" data-bs-target="#hotel-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-book"></i><span>Hotel</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-building"></i><span>Hotel</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="hotel-nav" class="nav-content collapse  <%= (current_path.startsWith('/portal/hotel')) ? 'show' : '' %>" data-bs-parent="#sidebar-nav">
-          <li>
+          <!-- <li>
             <a href="/portal/hotel/add" <%= (current_path === "/portal/hotel/add") ? "class=active" : '' %>>
-              <i class="bi bi-circle"></i><span>Add Hotel</span>
+              <i class="bi bi-circle"></i><span>Add Hotel</span> 
             </a>
-          </li>
+          </li> -->
           <li>
-            <a href="/portal/hotel"  <%= (current_path === "/portal/hotel") ? "class=active" : '' %>>
-              <i class="bi bi-circle"></i><span>Hotel</span>
+            <a href="/portal/hotel/32/edit"  <%= (current_path === "/portal/hotel/32/edit") ? "class=active" : '' %>>
+              <i class="bi bi-circle"></i><span>Taj Park Hotel</span>
             </a>
           </li>
           <li>
@@ -53,7 +53,7 @@
 
       <li class="nav-item">
         <a class="nav-link  <%= (current_path.startsWith('/portal/room'))  ? '' : 'collapsed' %>" data-bs-target="#room-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-book"></i><span>Room</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-door-open"></i><span>Room</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="room-nav" class="nav-content collapse  <%= (current_path.startsWith('/portal/room')) ? 'show' : '' %>" data-bs-parent="#sidebar-nav">
           <li>
@@ -71,12 +71,12 @@
               <i class="bi bi-circle"></i><span>Room Type</span>
             </a>
           </li>
-           <li>
+           <li class="d-none">
             <a href="/portal/room-option/add"  <%= (current_path === "/portal/room-option/add") ? "class=active" : '' %>>
               <i class="bi bi-circle"></i><span>Add Room Options</span>
             </a>
           </li>
-          <li>
+          <li class="d-none">
             <a href="/portal/room/room-options"  <%= (current_path === "/portal/room/room-options") ? "class=active" : '' %>>
               <i class="bi bi-circle"></i><span>Room Options</span>
             </a>
@@ -84,9 +84,9 @@
         </ul>
       </li><!-- End Tables Nav -->
 
-       <li class="nav-item">
+       <li class="nav-item d-none">
         <a class="nav-link  <%= (current_path.startsWith('/portal/season'))  ? '' : 'collapsed' %>" data-bs-target="#season-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-book"></i><span>Seasons</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-calendar-event"></i><span>Seasons</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="season-nav" class="nav-content collapse  <%= (current_path.startsWith('/portal/season')) ? 'show' : '' %>" data-bs-parent="#sidebar-nav">
           <li>
@@ -104,7 +104,7 @@
 
        <li class="nav-item">
         <a class="nav-link  <%= (current_path.startsWith('/portal/pricing'))  ? '' : 'collapsed' %>" data-bs-target="#pricing-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-book"></i><span>Pricing</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-tags"></i><span>Pricing</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="pricing-nav" class="nav-content collapse  <%= (current_path.startsWith('/portal/pricing')) ? 'show' : '' %>" data-bs-parent="#sidebar-nav">
           <li>
@@ -121,31 +121,21 @@
       </li><!-- End Tables Nav -->
 
       <li class="nav-item">
-  <a class="nav-link <%= (current_path.startsWith('/portal/booking') || current_path.startsWith('/portal/agent')) ? '' : 'collapsed' %>" 
-     data-bs-target="#booking-nav" 
-     data-bs-toggle="collapse" 
-     href="#">
-    <i class="bi bi-book"></i><span>Booking</span><i class="bi bi-chevron-down ms-auto"></i>
-  </a>
-  <ul id="booking-nav" 
-      class="nav-content collapse <%= (current_path.startsWith('/portal/booking') || current_path.startsWith('/portal/agent')) ? 'show' : '' %>" 
-      data-bs-parent="#sidebar-nav">
-    <li>
-      <a href="/portal/agent/list" class="<%= (current_path.startsWith('/portal/agent')) ? 'active' : '' %>">
-        <i class="bi bi-circle"></i><span>Agent Booking</span>
-      </a>
-    </li>
-    <li>
-      <a href="/portal/booking" class="<%= (current_path.startsWith('/portal/booking')) ? 'active' : '' %>">
-        <i class="bi bi-circle"></i><span>Booking</span>
-      </a>
-    </li>
-  </ul>
-</li>
+        <a class="nav-link  <%= (current_path.startsWith('/portal/booking'))  ? '' : 'collapsed' %>" data-bs-target="#booking-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-check"></i><span>Booking</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="booking-nav" class="nav-content collapse  <%= (current_path.startsWith('/portal/booking')) ? 'show' : '' %>" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="/portal/booking" <%= (current_path === "/portal/booking") ? "class=active" : '' %>>
+              <i class="bi bi-circle"></i><span>Booking</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Tables Nav -->
 
-      <li class="nav-item">
+      <li class="nav-item d-none">
         <a class="nav-link  <%= (current_path.startsWith('/portal/deal'))  ? '' : 'collapsed' %>" data-bs-target="#deal-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-book"></i><span>Deals</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-percent"></i><span>Deals</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="deal-nav" class="nav-content collapse  <%= (current_path.startsWith('/portal/deal')) ? 'show' : '' %>" data-bs-parent="#sidebar-nav">
           <li>
@@ -161,9 +151,9 @@
         </ul>
       </li><!-- End Tables Nav -->
 
-      <li class="nav-item">
+      <li class="nav-item d-none">
         <a class="nav-link  <%= (current_path.startsWith('/portal/currency'))  ? '' : 'collapsed' %>" data-bs-target="#currency-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-book"></i><span>Currency</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-currency-dollar"></i><span>Currency</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="currency-nav" class="nav-content collapse  <%= (current_path.startsWith('/portal/currency')) ? 'show' : '' %>" data-bs-parent="#sidebar-nav">
           <li>
@@ -182,7 +172,7 @@
 
       <li class="nav-item"> 
         <a class="nav-link <%= (current_path != "/portal/contacts")  ? 'collapsed' : '' %>" href="/portal/contacts">
-          <i class="bi bi-grid"></i>
+          <i class="bi bi-people"></i>
           <span>Contacts</span>
         </a>
       </li><!-- End Dashboard Nav -->

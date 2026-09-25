@@ -41,8 +41,8 @@
                             <select id="room_id" class="form-select border-gray" aria-label="Hotel" name="room_id">
                             <option value="">Select Rooms Option</option>
                                 <% rooms_option.forEach((item)=>{ %>
-                                <option value="<%= item.room_option_id %>">
-                                    <%= item.room_option_id %> (<%= item.room_type_name %> - <%= item.occupancy %>)
+                                <option value="<%= item.room_name_id %>">
+                                    <%= item.room_name_id %> (<%= item.name %>)
                                 </option>
                                 <% }) %>
                             </select>
@@ -61,16 +61,50 @@
                             <label class="form-label" for="hotel">Select Season</label>
                         </div>
 
-                        <div class="form-floating mb-4">
-                            <select id="day_type" class="form-select border-gray" aria-label="DayType" name="day_type">
-                                <option value="">Select Day Type</option>
-                                <option value="WEEKDAY">WEEKDAY</option>
-                                <option value="WEEKEND">WEEKEND</option>
-                            </select>
-                            <label class="form-label" for="hotel">Select Day Type</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-4">
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        class="form-control"
+                                        id="weekday_cost"
+                                        name="weekday_price"
+                                        placeholder="Weekday Cost">
+                                    <label for="weekday_cost">Weekday Cost (Dollor)</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-4">
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        class="form-control"
+                                        id="weekend_cost"
+                                        name="weekend_price"
+                                        placeholder="Weekend Cost">
+                                    <label for="weekend_cost">Weekend Cost (Dollor)</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-4">
+                                    <input
+                                        type="number"
+                                        step="1"
+                                        min="1"
+                                        class="form-control"
+                                        name="minimum_stay"
+                                        id="minimum_stay"
+                                        placeholder="minimum_stay"
+                                        required>
+                                    <label>Minimum stay days</label>    
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-sm-6">
                                  <div class="form-floating mb-4">
                                     <input 
@@ -149,7 +183,7 @@
                                     <label for="fb_upgrade_sar">FB Upgrade SAR</label>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                                     <!-- Season Code ID -->
                        
                     </div>
@@ -183,7 +217,7 @@
                             name="unique_key" 
                             class="form-control border-gray" 
                             placeholder="Unique Key"
-                            required
+                           
                             >
                             <label for="unique_key">Unique Key</label>
                         </div>
@@ -208,34 +242,34 @@
 <%- include('../partials/components/footer.ejs'); %>
 <script>
     $(document).ready(function() {
-        $('#hotel_id').on('change', function () {
-            const hotelId = $(this).val();
-            const roomSelect = $('#room_id');
+        // $('#hotel_id').on('change', function () {
+        //     const hotelId = $(this).val();
+        //     const roomSelect = $('#room_id');
 
-            roomSelect.empty();
-            roomSelect.append('<option value="">Select Room Option</option>');
+        //     roomSelect.empty();
+        //     roomSelect.append('<option value="">Select Room Option</option>');
 
-            if (!hotelId) return;
+        //     if (!hotelId) return;
 
-            $.ajax({
-                url: `/portal/rooms/options/${hotelId}`,
-                method: "GET",
-                success: function (res) {
-                    if (res.success) {
-                        res.data.forEach(item => {
-                            roomSelect.append(`
-                                <option value="${item.room_option_id}">
-                                    ${item.room_option_id} (${item.room_type_name} - ${item.occupancy})
-                                </option>
-                            `);
-                        });
-                    }
-                },
-                error: function () {
-                    roomSelect.append('<option>Error loading rooms</option>');
-                }
-            });
-        });
+        //     $.ajax({
+        //         url: `/portal/rooms/options/${hotelId}`,
+        //         method: "GET",
+        //         success: function (res) {
+        //             if (res.success) {
+        //                 res.data.forEach(item => {
+        //                     roomSelect.append(`
+        //                         <option value="${item.room_option_id}">
+        //                             ${item.room_option_id} (${item.room_type_name} - ${item.occupancy})
+        //                         </option>
+        //                     `);
+        //                 });
+        //             }
+        //         },
+        //         error: function () {
+        //             roomSelect.append('<option>Error loading rooms</option>');
+        //         }
+        //     });
+        // });
 
          $("#season_code_id").change(function() {
 

@@ -1,0 +1,233 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<style>
+  .dt-buttons {
+    margin-bottom: 15px;
+  }
+
+  .dt-button {
+    margin-right: 5px !important;
+  }
+</style>
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Pricing V2</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/portal/pricing-v2">Pricing</a>
+        </li>
+        <li class="breadcrumb-item active">
+          Pricing List
+        </li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+
+            <h5 class="card-title">Pricing List</h5>
+
+            <% if(success){ %>
+              <div class="alert alert-success">
+                <%= success %>
+              </div>
+            <% } %>
+
+            <table class="table table-bordered table-striped datatable" id="pricing_table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Room</th>
+                  <th>Season</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Weekday Price</th>
+                  <th>Weekend Price</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <% if(prices && prices.length > 0){ %>
+
+                  <% let index = 1; %>
+
+                  <% prices.forEach(function(item){ %>
+
+                    <tr>
+
+                      <td><%= index++ %></td>
+
+                      <td>
+                        <strong><%= item.room_option_name %></strong><br>
+                        <small class="text-muted">
+                          <%= item.room_option_id %>
+                        </small>
+                      </td>
+
+                      <td>
+                        <% if(item.season_code){ %>
+                          <%= item.season_code %>
+                        <% }else{ %>
+                          <span class="badge bg-secondary">
+                            All Seasons
+                          </span>
+                        <% } %>
+                      </td>
+
+                      <td>
+                        <%= new Date(item.start_date).toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                        }) %>
+                    </td>
+
+                    <td>
+                        <%= new Date(item.end_date).toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                        }) %>
+                    </td>
+
+                      <td>
+                        <strong>
+                          $ <%= Number(item.weekday_price).toFixed(2) %>
+                        </strong>
+                      </td>
+
+                      <td>
+                        <strong>
+                          $ <%= Number(item.weekend_price).toFixed(2) %>
+                        </strong>
+                      </td>
+
+                      <td>
+
+                        <a
+                          href="/portal/pricing-v2/<%= item.id %>/edit"
+                          class="btn btn-primary btn-sm"
+                          title="Edit">
+
+                          <i class="bi bi-pencil"></i>
+
+                        </a>
+
+                        <button
+                          class="btn btn-danger btn-sm"
+                          onclick="confirmDelete(<%= item.id %>)"
+                          title="Delete">
+
+                          <i class="bi bi-trash"></i>
+
+                        </button>
+
+                      </td>
+
+                    </tr>
+
+                  <% }) %>
+
+                <% } else { %>
+
+                  <tr>
+
+                    <td colspan="8" class="text-center py-5">
+
+                      <p class="text-muted mb-3">
+                        No pricing records found.
+                      </p>
+
+                      <a href="/portal/pricing-v2/create" class="btn btn-primary">
+                        Add First Pricing
+                      </a>
+
+                    </td>
+
+                  </tr>
+
+                <% } %>
+
+              </tbody>
+
+            </table>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<%- include('../partials/components/footer.ejs'); %>
+
+<script>
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Delete Pricing?',
+        text: 'This record will be permanently deleted.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Delete'
+    }).then(function(result) {
+
+        if (result.isConfirmed) {
+
+            $.ajax({
+                url: '/portal/pricing-v2/' + id + '/delete',
+                type: 'POST',
+                success: function(response) {
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: response.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(function () {
+                        location.reload();
+                    });
+
+                },
+                error: function(xhr) {
+
+                    let message = 'Something went wrong.';
+
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: message
+                    });
+
+                }
+            });
+
+        }
+
+    });
+}
+</script>
+
+</body>
+</html>

@@ -2,13 +2,6 @@
 <%- include('../partials/components/top-bar.ejs'); %>
 
 <style>
-  .image-container {
-    position: relative;
-    display: inline-block;
-    margin: 5px;
-    cursor: move;
-  }
-  
   .rounded-image {
     width: 100px;
     height: 100px;
@@ -23,43 +16,6 @@
     height: 25px;
     padding: 0;
     font-size: 12px;
-    z-index: 10;
-  }
-  
-  .draggable-image {
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  
-  .draggable-image.dragging {
-    opacity: 0.5;
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    cursor: grabbing;
-  }
-  
-  .draggable-image.drag-over {
-    border: 2px dashed #007bff;
-    border-radius: 8px;
-  }
-  
-  .drag-handle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.7);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s;
-    font-weight: bold;
-    font-size: 16px;
-  }
-  
-  .draggable-image:hover .drag-handle {
-    opacity: 1;
   }
 </style>
 
@@ -148,8 +104,6 @@
                   <!-- Gallery Upload -->
                   <div class="form-outline mb-4">
                     <label class="form-label label-gray" for="gallery_images_input">Gallery Images</label>
-                    <p class="text-muted small">Drag images to reorder them</p>
-                    
                     <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start;" id="gallery_preview_container">
                       <label class="image-container-empty" for="gallery_images_input" id="gallery_images_label">
                         <i class="bi bi-images"></i>
@@ -164,22 +118,16 @@
                         style="display:none;"
                       />
 
-                      <!-- Sortable gallery container -->
-                      <div id="sortable_gallery" style="display: contents;">
-                        <% if (room.photos && room.photos.length > 0) { %>
-                          <% room.photos.sort((a, b) => a.position - b.position).forEach((photo) => { %>
-                            <div class="image-container existing-image draggable-image" data-photo-id="<%= photo.id %>" draggable="true">
-                              <img src="<%= photo.image_url %>" alt="Room Gallery Image" class="rounded-image" loading="lazy" />
+                      <% if (room.photos && room.photos.length > 0) { %>
+                          <% room.photos.forEach((photo) => { %>
+                          <div class="image-container existing-image" data-photo-id="<%= photo.id %>">
+                              <img src="<%= photo.image_url %>" alt="Room Gallery Image" class="rounded-image"   loading="lazy" />
                               <button class="btn btn-danger remove-field remove-existing-image" type="button" data-photo-id="<%= photo.id %>">X</button>
-                              <div class="drag-handle" title="Drag to reorder">⋮⋮</div>
-                            </div>
+                          </div>
                           <% }) %>
-                        <% } %>
-                      </div>
+                      <% } %>
                     </div>
-                    
                     <input type="hidden" id="deleted_photos" name="deleted_photos" value="" />
-                    <input type="hidden" id="photo_order" name="photo_order" value="" />
                   </div>
 
                   <!-- Room Extras -->
@@ -205,20 +153,14 @@
                     <button type="button" class="btn btn-outline-secondary" id="add-extra-btn">+ Add Extra</button>
                     <input type="hidden" id="deleted_extras" name="deleted_extras" value="" />
                   </div>
-
-                    <div class="form-floating mb-4">
-                    <textarea class="form-control border-gray" id="description" rows="4" name="description" style="height: 200px;"><%= room.description %></textarea>
-                    <label class="form-label" for="description">Description</label>
-                  </div>
-
                 </div>
 
                 <div class="col-sm-4">
                   <!-- Maximum Guest -->
-                  <div class="form-outline mb-4">
+                  <!-- <div class="form-outline mb-4">
                     <label class="form-label" for="maximum_guest">Maximum Guest</label>
                     <input type="text" id="maximum_guest" class="form-control" name="maximum_guest" value="<%= room.max_guests || '' %>" />
-                  </div>
+                  </div> -->
 
                    <div class="form-floating mb-4">
                     <select id="roomTypeId" class="form-select border-gray" aria-label="Hotel" name="roomTypeId">
@@ -235,10 +177,10 @@
                   </div>
 
                   <!-- Bed Type -->
-                  <div class="form-outline mb-4">
+                  <!-- <div class="form-outline mb-4">
                     <label class="form-label" for="bed_type">Bed Type</label>
                     <input type="text" id="bed_type" class="form-control" name="bed_type" value="<%= room.bed_type || '' %>" />
-                  </div>
+                  </div> -->
 
                    <div class="mb-4 form-outline">
                     <label class="form-label">View from Room</label>
@@ -269,18 +211,21 @@
                   </div>
 
                   <!-- Price -->
-                  <div class="form-outline mb-4">
+                  <!-- <div class="form-outline mb-4">
                     <label class="form-label" for="price">Price per night</label>
                     <input type="text" id="price" class="form-control" name="price" value="<%= room.price_per_night || '' %>" />
-                  </div>
+                  </div> -->
 
-                
+                  <div class="form-floating mb-4">
+                    <textarea class="form-control border-gray" id="description" rows="4" name="description" style="height: 100px;"><%= room.description %></textarea>
+                    <label class="form-label" for="description">Description</label>
+                  </div>
 
                   <!-- Free Cancellation -->
-                  <div class="form-outline mb-4">
+                  <!-- <div class="form-outline mb-4">
                     <label class="form-label" for="free_cancellation_hours">Free cancellation Hours</label>
                     <input type="text" id="free_cancellation_hours" class="form-control" name="free_cancellation_hours" value="<%= room.free_cancellation_hours || 48 %>" />
-                  </div>
+                  </div> -->
                 </div>
               </div>
 
@@ -349,211 +294,91 @@
 
 <%- include('../partials/components/footer.ejs'); %>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
 
 <script>
-ClassicEditor
-    .create(document.querySelector('#description'), {
-        toolbar: [
-            'heading',
-            '|',
-            'bold',
-            'italic',
-            'underline',
-            '|',
-            'bulletedList',
-            'numberedList',
-            '|',
-            'link',
-            'blockQuote',
-            '|',
-            'undo',
-            'redo'
-        ]
+   $(document).on("click", ".delete_room_occupancy", function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        var id = $(this).data("id");
+        var current_ele = $(this);
+        $.ajax({
+          type: "POST", // Change to "POST" or "PUT" if needed
+          url: `/portal/room/occupancy/delete/${id}`, // Replace with your API endpoint
+          success: function (response) {
+            // Handle the success response here
+            console.log("Success:", response);
+            if (response.status == "success") {
+              Swal.fire(
+                'Deleted!',
+                'city has been deleted.',
+                'success'
+              )
+              current_ele.parent().parent().hide();
+              location.reload();
+            } else {
+              console.log("some error occure =====");
+            }
+          },
+          error: function (error) {
+            // Handle the error response here
+            console.log("Error:", error);
+          },
+        });
+      }
     })
-    .catch(error => {
-        console.error(error);
-    });
-</script>
-
-
-<script>
-$(document).on("click", ".delete_room_occupancy", function (e) {
-  e.preventDefault();
-  Swal.fire({
-    title: 'Are you sure?',
-    text: "You won't be able to revert this!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, delete it!'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      var id = $(this).data("id");
-      var current_ele = $(this);
-      $.ajax({
-        type: "POST",
-        url: `/portal/room/occupancy/delete/${id}`,
-        success: function (response) {
-          console.log("Success:", response);
-          if (response.status == "success") {
-            Swal.fire('Deleted!', 'Room occupancy has been deleted.', 'success')
-            current_ele.parent().parent().hide();
-            location.reload();
-          } else {
-            console.log("some error occure =====");
-          }
-        },
-        error: function (error) {
-          console.log("Error:", error);
-        },
-      });
-    }
-  })
-});
+  });
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Tab switching
-  $("#complete_video").click(function(){
-    $("#show_complete_video").show();
-    $("#show_edit_video").hide();
-    $("#show_logged_video_users").hide();
-  });
+ $("#complete_video").click(function(){
+      $("#show_complete_video").show();
+      $("#show_edit_video").hide();
+      $("#show_logged_video_users").hide();
+    });
 
-  $("#edit_video").click(function(){
-    $("#show_complete_video").hide();
-    $("#show_logged_video_users").hide();
-    $("#show_edit_video").show();
-  });
+    $("#edit_video").click(function(){
+      $("#show_complete_video").hide();
+      $("#show_logged_video_users").hide();
+      $("#show_edit_video").show();
+    });
 
-  $("#video_users").click(function(){
-    $("#show_complete_video").hide();
-    $("#show_edit_video").hide();
-    $("#show_logged_video_users").show();
-  });
+    $("#video_users").click(function(){
+      $("#show_complete_video").hide();
+      $("#show_edit_video").hide();
+      $("#show_logged_video_users").show();
+    });
 
   const galleryInput = document.getElementById("gallery_images_input");
   const previewContainer = document.getElementById("gallery_preview_container");
   const deletedPhotosInput = document.getElementById("deleted_photos");
   const deletedExtrasInput = document.getElementById("deleted_extras");
-  const photoOrderInput = document.getElementById("photo_order");
   let deletedPhotos = [];
   let deletedExtras = [];
 
   // Store selected files in a DataTransfer object
   let selectedFiles = new DataTransfer();
 
-  // ========================================
-  // DRAG AND DROP FUNCTIONALITY
-  // ========================================
-  let draggedElement = null;
-
-  function initDragAndDrop() {
-    const draggableImages = document.querySelectorAll('.draggable-image');
-    
-    draggableImages.forEach(img => {
-      img.addEventListener('dragstart', handleDragStart);
-      img.addEventListener('dragover', handleDragOver);
-      img.addEventListener('drop', handleDrop);
-      img.addEventListener('dragend', handleDragEnd);
-      img.addEventListener('dragenter', handleDragEnter);
-      img.addEventListener('dragleave', handleDragLeave);
-    });
-  }
-
-  function handleDragStart(e) {
-    draggedElement = this;
-    this.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/html', this.innerHTML);
-  }
-
-  function handleDragOver(e) {
-    if (e.preventDefault) {
-      e.preventDefault();
-    }
-    e.dataTransfer.dropEffect = 'move';
-    return false;
-  }
-
-  function handleDragEnter(e) {
-    if (this !== draggedElement && this.classList.contains('draggable-image')) {
-      this.classList.add('drag-over');
-    }
-  }
-
-  function handleDragLeave(e) {
-    this.classList.remove('drag-over');
-  }
-
-  function handleDrop(e) {
-    if (e.stopPropagation) {
-      e.stopPropagation();
-    }
-
-    if (draggedElement !== this && this.classList.contains('draggable-image')) {
-      const container = document.getElementById('sortable_gallery');
-      const allImages = Array.from(container.querySelectorAll('.draggable-image'));
-      
-      const draggedIndex = allImages.indexOf(draggedElement);
-      const targetIndex = allImages.indexOf(this);
-      
-      if (draggedIndex < targetIndex) {
-        this.parentNode.insertBefore(draggedElement, this.nextSibling);
-      } else {
-        this.parentNode.insertBefore(draggedElement, this);
-      }
-      
-      updatePhotoOrder();
-    }
-
-    this.classList.remove('drag-over');
-    return false;
-  }
-
-  function handleDragEnd(e) {
-    this.classList.remove('dragging');
-    
-    document.querySelectorAll('.draggable-image').forEach(item => {
-      item.classList.remove('drag-over');
-    });
-  }
-
-  function updatePhotoOrder() {
-    const container = document.getElementById('sortable_gallery');
-    const orderedImages = Array.from(container.querySelectorAll('.draggable-image'));
-    const photoOrder = orderedImages.map((img, index) => {
-      const photoId = img.getAttribute('data-photo-id');
-      return `${photoId}:${index}`;
-    }).join(',');
-    
-    photoOrderInput.value = photoOrder;
-    console.log('Updated photo order:', photoOrder);
-  }
-
-  // Initialize drag and drop on page load
-  initDragAndDrop();
-  updatePhotoOrder();
-
-  // ========================================
-  // EXISTING IMAGE REMOVAL
-  // ========================================
+  // Handle existing gallery image removal
   document.querySelectorAll(".remove-existing-image").forEach(btn => {
-    btn.addEventListener("click", function(e) {
-      e.stopPropagation(); // Prevent drag events
+    btn.addEventListener("click", function() {
       const photoId = this.dataset.photoId;
       deletedPhotos.push(photoId);
       deletedPhotosInput.value = deletedPhotos.join(",");
       this.closest(".image-container").remove();
-      updatePhotoOrder(); // Update order after deletion
       console.log("Marked photo for deletion:", photoId);
     });
   });
 
-  // ========================================
-  // THUMBNAIL HANDLING
-  // ========================================
+  // Handle thumbnail removal
   const removeThumbnailBtn = document.getElementById("remove_thumbnail_btn");
   const removeThumbnailInput = document.getElementById("remove_thumbnail");
   const thumbnailPreview = document.getElementById("thumbnail_preview");
@@ -566,37 +391,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const fileInput = document.getElementById("thumbnail_input");
-  if (fileInput) {
-    fileInput.addEventListener("change", (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-      
-      removeThumbnailInput.value = "0";
-      
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        thumbnailPreview.innerHTML = `
-          <img src="${e.target.result}" alt="Thumbnail" class="rounded-image" />
-          <button class="btn btn-danger remove-field" type="button">X</button>
-        `;
-        thumbnailPreview.querySelector("button").addEventListener("click", () => {
-          fileInput.value = "";
-          thumbnailPreview.innerHTML = "";
-        });
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // ========================================
-  // NEW GALLERY IMAGES
-  // ========================================
+  // Gallery preview with multiple file support
   galleryInput?.addEventListener("change", (event) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
-
-    const sortableGallery = document.getElementById('sortable_gallery');
 
     Array.from(files).forEach((file) => {
       selectedFiles.items.add(file);
@@ -610,7 +408,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <img src="${e.target.result}" alt="Preview" class="rounded-image" />
           <button class="btn btn-danger remove-field" type="button">X</button>
         `;
-        sortableGallery.appendChild(imgDiv);
+        previewContainer.appendChild(imgDiv);
 
         imgDiv.querySelector("button").addEventListener("click", () => {
           const newFileList = new DataTransfer();
@@ -631,11 +429,33 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(`Total new gallery images: ${selectedFiles.files.length}`);
   });
 
-  // ========================================
-  // ROOM EXTRAS MANAGEMENT
-  // ========================================
+  // Thumbnail preview
+  const fileInput = document.getElementById("thumbnail_input");
+  if (fileInput) {
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      // Reset the remove flag when new image is selected
+      removeThumbnailInput.value = "0";
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        thumbnailPreview.innerHTML = `
+          <img src="${e.target.result}" alt="Thumbnail" class="rounded-image" />
+          <button class="btn btn-danger remove-field" type="button">X</button>
+        `;
+        thumbnailPreview.querySelector("button").addEventListener("click", () => {
+          fileInput.value = "";
+          thumbnailPreview.innerHTML = "";
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Add Extra functionality
   let extraIndex = <%= room_extras && room_extras.length > 0 ? room_extras.length : 1 %>;
-  
   document.getElementById("add-extra-btn").addEventListener("click", () => {
     const div = document.createElement("div");
     div.classList.add("extra-item", "mb-2");
@@ -653,6 +473,7 @@ document.addEventListener("DOMContentLoaded", () => {
     extraIndex++;
   });
 
+  // Remove existing extras
   document.querySelectorAll(".remove-extra-btn").forEach(btn => {
     btn.addEventListener("click", function() {
       const extraItem = this.closest(".extra-item");

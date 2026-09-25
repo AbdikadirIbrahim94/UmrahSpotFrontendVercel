@@ -1,0 +1,117 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Booking #<%= booking.id %></h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/portal/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/portal/booking">Bookings</a></li>
+        <li class="breadcrumb-item active">#<%= booking.id %></li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Guest Information</h5>
+            <table class="table table-borderless mb-0">
+              <tr><td class="text-muted" style="width:160px">Name</td><td><strong><%= booking.guest_name %></strong></td></tr>
+              <tr><td class="text-muted">Email</td><td><%= booking.guest_email %></td></tr>
+              <% if (booking.guest_details) { %>
+                <% if (booking.guest_details.phone) { %>
+                  <tr><td class="text-muted">Phone</td><td><%= booking.guest_details.phone %></td></tr>
+                <% } %>
+                <% if (booking.guest_details.street_address) { %>
+                  <tr>
+                    <td class="text-muted">Billing Address</td>
+                    <td>
+                      <%= booking.guest_details.street_address %><br>
+                      <%= booking.guest_details.city %><% if (booking.guest_details.postal_code) { %>, <%= booking.guest_details.postal_code %><% } %><br>
+                      <%= booking.guest_details.country %>
+                    </td>
+                  </tr>
+                <% } %>
+                <% if (booking.guest_details.special_request) { %>
+                  <tr><td class="text-muted">Special Request</td><td><%= booking.guest_details.special_request %></td></tr>
+                <% } %>
+              <% } %>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Payment Information</h5>
+            <table class="table table-borderless mb-0">
+              <tr><td class="text-muted" style="width:160px">Amount Paid</td><td><strong>$<%= parseFloat(booking.amount_paid).toFixed(2) %></strong></td></tr>
+              <tr>
+                <td class="text-muted">Status</td>
+                <td>
+                  <% if (booking.status === 'confirmed') { %>
+                    <span class="badge bg-success">Confirmed</span>
+                  <% } else if (booking.status === 'failed') { %>
+                    <span class="badge bg-danger">Failed</span>
+                  <% } else { %>
+                    <span class="badge bg-warning">Pending</span>
+                  <% } %>
+                </td>
+              </tr>
+              <tr><td class="text-muted">Stripe Payment ID</td><td><small class="text-muted"><%= booking.stripe_payment_id || '—' %></small></td></tr>
+              <tr><td class="text-muted">Check-in / Check-out</td><td><%= booking.check_in %> &rarr; <%= booking.check_out %></td></tr>
+              <tr><td class="text-muted">Booked On</td><td><%= new Date(booking.created_at).toLocaleString() %></td></tr>
+              <tr><td class="text-muted">Last Updated</td><td><%= new Date(booking.updated_at).toLocaleString() %></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Rooms Booked</h5>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Room</th>
+                  <th>Check-in</th>
+                  <th>Check-out</th>
+                  <th>Nights</th>
+                  <th>Price/Night</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% booking.rooms.forEach(function(r) { %>
+                  <% const nights = Math.max(1, Math.round((new Date(r.check_out) - new Date(r.check_in)) / 86400000)); %>
+                  <tr>
+                    <td><%= r.room_name %></td>
+                    <td><%= r.check_in %></td>
+                    <td><%= r.check_out %></td>
+                    <td><%= nights %></td>
+                    <td>$<%= parseFloat(r.price_per_night).toFixed(2) %></td>
+                    <td>$<%= (nights * r.price_per_night).toFixed(2) %></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+            <div class="text-end">
+              <strong>Total: $<%= parseFloat(booking.amount_paid).toFixed(2) %></strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/components/footer.ejs'); %>
+</body>
+</html>

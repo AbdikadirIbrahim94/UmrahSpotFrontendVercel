@@ -7,6 +7,8 @@ import { Room } from "../entities/Room";
 import { RoomOccupancy } from "../entities/RoomOccupancy";
 import { Deal } from "../entities/Deal";
 import { Booking2 } from "../entities/Booking2";
+import { Not, In } from "typeorm";
+import { BookingTajpark } from "../entities/BookingTajpark";
 
 export class UserController {
   static async showLoginPage(req: Request, res: Response) {
@@ -82,15 +84,25 @@ export class UserController {
     // ✅ Render dashboard after login
   static async getDashboard(req: Request, res: Response) {
     try {
+      const hotelId = 32;
       const hotelRepo = AppDataSource.getRepository(Hotel);
       const roomRepo = AppDataSource.getRepository(Room);
       const occupancyRepo = AppDataSource.getRepository(RoomOccupancy);
       const dealRepo = AppDataSource.getRepository(Deal);
-      const bookingRepo = AppDataSource.getRepository(Booking2);
+      const bookingRepo = AppDataSource.getRepository(BookingTajpark);
 
-      const totalHotels = await hotelRepo.count();
-      const totalRooms = await roomRepo.count();
-      const totalRoomOccupancy = await occupancyRepo.count();
+      const totalHotels = await hotelRepo.count({ where: { id: hotelId }});
+      const totalRooms = await roomRepo.count({
+          where: {
+              hotel_id: hotelId,
+              id: Not(In([66, 49]))
+          }
+      });
+      const totalRoomOccupancy = await occupancyRepo
+                                    .createQueryBuilder("occupancy")
+                                    .leftJoin("occupancy.room", "room")
+                                    .where("room.hotel_id = :hotelId", { hotelId: 32 })
+                                    .getCount();
       const totaldeals = await dealRepo.count();
       const totalbookings = await bookingRepo.count();
 
@@ -109,4 +121,21 @@ export class UserController {
       return res.status(500).send("Server Error");
     }
   }
+
+  static async Logout(req: Request, res: Response) {
+  console.log('Logout requested');
+  
+  // Safely destroy the entire session
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      return res.status(500).send("Could not log out.");
+    }
+    
+    // // Optional: Clear the session cookie from the browser
+    // res.clearCookie('connect.sid'); // Replace 'connect.sid' if you use a custom cookie name
+
+    return res.redirect("/portal/login");
+  });
+} 
 }

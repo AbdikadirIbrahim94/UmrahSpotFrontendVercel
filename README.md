@@ -1,3 +1,1 @@
 # umrahspot-backend
-
-//topush

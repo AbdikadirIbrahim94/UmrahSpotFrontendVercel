@@ -12,7 +12,6 @@ import path from "path";
 import crypto from "crypto";
 import { s3 } from "../utils/aws";
 import { ContactUsController } from '../controllers/ContactUsController';
-import { AgentController } from '../controllers/AgentController';
 
 
 console.log("this file is running ;;;;;;;;;;s")
@@ -34,7 +33,7 @@ const upload = multer({
     key: (_req: Request, file: Express.Multer.File, cb: MulterS3Callback) => {
       const ext = path.extname(file.originalname);
       const fileName = crypto.randomBytes(16).toString("hex");
-      cb(null, `hotels/${Date.now()}-${fileName}${ext}`);
+      cb(null, `hotels/taj_park_hotel/${Date.now()}-${fileName}${ext}`);
     },
   }),
 });
@@ -57,20 +56,23 @@ const upload2 = multer({
 // router.get('/', HotelController.getHotels);
 router.get("/login", UserController.showLoginPage);
 router.post("/login", UserController.postLogin);
-router.get("/dashboard", isAdmin , UserController.getDashboard);
+router.get("/logout",UserController.Logout)
+router.get("/dashboard",isAdmin, UserController.getDashboard);
 router.get("/city", isAdmin, DashboardController.showCity);
 router.get("/city/add", isAdmin, DashboardController.addCity);
 router.post("/city/add", isAdmin, DashboardController.saveCity);
 router.get("/hotel", isAdmin, DashboardController.showHotel);
-router.get("/booking", isAdmin, DashboardController.showBooking);
-router.get("/booking/:id", DashboardController.showBookingDetails);
+// router.get("/booking", isAdmin, DashboardController.showBooking);
+router.get("/booking",  PricingController.list_bookings_tajpark);
+router.get("/booking/:id", PricingController.get_booking_detail_tajpark);
+router.delete("/booking/:id", PricingController.delete_booking_tajpark);
 router.get("/hotel-extra", isAdmin, DashboardController.showHotelExtra);
 router.get("/hotel-extra/add", isAdmin, DashboardController.addHotelExtra);
 router.get("/hotel-extra/edit/:id", isAdmin, DashboardController.editHotelExtra);
 router.post("/hotel-extra/update/:id", isAdmin, DashboardController.updateHotelExtra);
 router.post("/hotel-extra/:id/delete", isAdmin, DashboardController.deleteHotelExtra);
 router.post("/hotel-extra/add", isAdmin, DashboardController.saveHotelExtra);
-router.get("/room", isAdmin, DashboardController.showRoom);
+router.get("/room", isAdmin, DashboardController.showRoom); 
 router.get("/hotel/:id/edit", isAdmin, DashboardController.showHotelEdit);
 router.post("/hotel/:id/delete", isAdmin, DashboardController.deleteHotel);
 router.get("/room/:id/edit", isAdmin, DashboardController.showRoomEdit);
@@ -148,16 +150,20 @@ router.get("/room/room-options",DashboardController.showRoomOccupancy);
 router.get("/update-rooms-left",DashboardController.update_rooms_left);
 
 router.get("/pricing/add", isAdmin, PricingController.addPricing);
-router.post("/pricing/create", isAdmin, PricingController.createRoomPrice);
-router.get("/pricing", isAdmin, PricingController.getPricingList);
-router.get("/pricing/:id/edit", isAdmin, PricingController.editPricingList);
-router.post("/pricing/update/:id", isAdmin, PricingController.updateRoomPrice);
-router.get("/rooms/options/:hotel_id", isAdmin, PricingController.getRoomOptionsByHotel);
+router.post("/pricing/create", isAdmin, PricingController.createRoomPriceV2);
+// router.get("/pricing",  PricingController.getPricingList);
+router.get("/pricing", isAdmin, PricingController.getPricingListV2);
+router.get("/pricing/:id/edit",isAdmin,  PricingController.editPricingList);
+router.get("/pricing-v2/:id/edit",isAdmin,  PricingController.editPricingV2);
+// router.post("/pricing/update/:id",  PricingController.updateRoomPrice);
+router.post("/pricing-v2/:id/update", isAdmin, PricingController.updateRoomPriceV2);
+router.post("/pricing-v2/:id/delete",isAdmin,PricingController.deleteRoomPriceV2)
+router.get("/rooms/options/:hotel_id",isAdmin,  PricingController.getRoomOptionsByHotel);
 
 router.post("/get-season-details", isAdmin, PricingController.getSeasonDetails);
 router.get("/get-season-details", isAdmin, PricingController.getSeasonDetails);
 
-router.get("/contacts", isAdmin, ContactUsController.getAll);
+router.get("/contacts",  ContactUsController.getAll);
 router.post("/contact/:id/delete", isAdmin, ContactUsController.delete);
 
 
@@ -218,8 +224,5 @@ router.get("/currency-rates/delete/:id", PricingController.deleteCurrencyRate);
 router.get("/currency/hotel-markup-rates", PricingController.getHotelMarkupRates);
 router.post("/currency/hotel-markup-rates/update", PricingController.updateHotelMarkupRates);
 
-// ---------------------------------------------
 
-router.get("/agent/list",AgentController.viewGetBookingDetails);
-router.get("/agent/:id/view",AgentController.viewGetBookingDetailsByID);
 export default router;

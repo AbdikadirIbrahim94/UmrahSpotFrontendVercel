@@ -20,7 +20,7 @@ body {
 }
 
 a {
-  color: #1B98E0;
+  color: #ab916c;
   text-decoration: none;
 }
 
@@ -53,7 +53,7 @@ h6 {
   }
   .dashboard .info-card h6 {
     font-size: 16px;
-    color: #012970;
+    color: #455643;
     font-weight: 600;
     margin: 0;
     padding: 0;
@@ -71,7 +71,7 @@ h6 {
   font-size: 24px;
   margin-bottom: 0;
   font-weight: 600;
-  color: #012970;
+  color: #455643;
 }
 
 /*--------------------------------------------------------------
@@ -84,7 +84,7 @@ h6 {
   right: 15px;
   bottom: 15px;
   z-index: 99999;
-  background: #1B98E0;
+  background: #ab916c;
   width: 40px;
   height: 40px;
   border-radius: 4px;
@@ -246,7 +246,7 @@ h6 {
   padding: 15px 0 15px 0;
   font-size: 18px;
   font-weight: 500;
-  color: #012970;
+  color: #455643;
   font-family: "Poppins", sans-serif;
 }
 
@@ -295,7 +295,7 @@ h6 {
 }
 
 .accordion-button:not(.collapsed) {
-  color: #012970;
+  color: #455643;
   background-color: #f6f9ff;
 }
 
@@ -307,7 +307,7 @@ h6 {
 
 .accordion-flush .accordion-button:not(.collapsed) {
   box-shadow: none;
-  color: #1B98E0;
+  color: #ab916c;
 }
 
 .accordion-flush .accordion-body {
@@ -355,13 +355,13 @@ h6 {
 
 .nav-tabs-bordered .nav-link:hover,
 .nav-tabs-bordered .nav-link:focus {
-  color: #1B98E0;
+  color: #ab916c;
 }
 
 .nav-tabs-bordered .nav-link.active {
   background-color: #fff;
-  color: #1B98E0;
-  border-bottom: 2px solid #1B98E0;
+  color: #ab916c;
+  border-bottom: 2px solid #ab916c;
 }
 
 /*--------------------------------------------------------------
@@ -385,7 +385,7 @@ h6 {
 .logo span {
   font-size: 26px;
   font-weight: 700;
-  color: #012970;
+  color: #455643;
   font-family: "Nunito", sans-serif;
 }
 
@@ -404,7 +404,7 @@ h6 {
   font-size: 32px;
   padding-left: 10px;
   cursor: pointer;
-  color: #012970;
+  color: #455643;
 }
 
 .header .search-bar {
@@ -441,7 +441,7 @@ h6 {
 .header .search-form input {
   border: 0;
   font-size: 14px;
-  color: #012970;
+  color: #455643;
   border: 1px solid rgba(1, 41, 112, 0.2);
   padding: 7px 38px 7px 8px;
   border-radius: 3px;
@@ -464,7 +464,7 @@ h6 {
 }
 
 .header .search-form button i {
-  color: #012970;
+  color: #455643;
 }
 
 /*--------------------------------------------------------------
@@ -481,13 +481,13 @@ h6 {
 
 .header-nav .nav-icon {
   font-size: 22px;
-  color: #012970;
+  color: #455643;
   margin-right: 25px;
   position: relative;
 }
 
 .header-nav .nav-profile {
-  color: #012970;
+  color: #455643;
 }
 
 .header-nav .nav-profile img {
@@ -697,7 +697,7 @@ h6 {
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: #1B98E0;
+  color: #ab916c;
   transition: 0.3;
   background: #f6f9ff;
   padding: 10px 15px;
@@ -707,11 +707,11 @@ h6 {
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
-  color: #1B98E0;
+  color: #ab916c;
 }
 
 .sidebar-nav .nav-link.collapsed {
-  color: #012970;
+  color: #455643;
   background: #fff;
 }
 
@@ -720,12 +720,12 @@ h6 {
 }
 
 .sidebar-nav .nav-link:hover {
-  color: #1B98E0;
+  color: #ab916c;
   background: #f6f9ff;
 }
 
 .sidebar-nav .nav-link:hover i {
-  color: #1B98E0;
+  color: #ab916c;
 }
 
 .sidebar-nav .nav-link .bi-chevron-down {
@@ -748,7 +748,7 @@ h6 {
   align-items: center;
   font-size: 14px;
   font-weight: 600;
-  color: #012970;
+  color: #455643;
   transition: 0.3;
   padding: 10px 0 10px 40px;
   transition: 0.3s;
@@ -763,11 +763,11 @@ h6 {
 
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
-  color: #1B98E0;
+  color: #ab916c;
 }
 
 .sidebar-nav .nav-content a.active i {
-  background-color: #1B98E0;
+  background-color: #ab916c;
 }
 
 /*--------------------------------------------------------------
@@ -790,7 +790,7 @@ h6 {
 
 .dashboard .filter .icon:hover,
 .dashboard .filter .icon:focus {
-  color: #1B98E0;
+  color: #ab916c;
 }
 
 .dashboard .filter .dropdown-header {
@@ -824,7 +824,7 @@ h6 {
 
 .dashboard .info-card h6 {
   font-size: 28px;
-  color: #012970;
+  color: #455643;
   font-weight: 600;
   margin: 0;
   padding: 0;
@@ -840,7 +840,7 @@ h6 {
 }
 
 .dashboard .sales-card .card-icon {
-  color: #1B98E0;
+  color: #ab916c;
   background: #f6f6fe;
 }
 
@@ -927,12 +927,12 @@ h6 {
 }
 
 .dashboard .news h4 a {
-  color: #012970;
+  color: #455643;
   transition: 0.3s;
 }
 
 .dashboard .news h4 a:hover {
-  color: #1B98E0;
+  color: #ab916c;
 }
 
 .dashboard .news p {
@@ -999,7 +999,7 @@ h6 {
   background-color: #fff;
   border-radius: 0.25rem;
   text-align: center;
-  color: #012970;
+  color: #455643;
   padding: 15px 0;
 }
 
@@ -1048,7 +1048,7 @@ h6 {
 }
 
 .profile .profile-card .social-links a:hover {
-  color: #012970;
+  color: #455643;
 }
 
 .profile .profile-overview .row {
@@ -1057,7 +1057,7 @@ h6 {
 }
 
 .profile .profile-overview .card-title {
-  color: #012970;
+  color: #455643;
 }
 
 .profile .profile-overview .label {
@@ -1080,7 +1080,7 @@ h6 {
 .faq .basic h6 {
   font-size: 18px;
   font-weight: 600;
-  color: #1B98E0;
+  color: #ab916c;
 }
 
 .faq .basic p {
@@ -1097,12 +1097,12 @@ h6 {
 .contact .info-box i {
   font-size: 38px;
   line-height: 0;
-  color: #1B98E0;
+  color: #ab916c;
 }
 
 .contact .info-box h3 {
   font-size: 20px;
-  color: #012970;
+  color: #455643;
   font-weight: 700;
   margin: 20px 0 10px 0;
 }
@@ -1164,7 +1164,7 @@ h6 {
 
 .contact .php-email-form input:focus,
 .contact .php-email-form textarea:focus {
-  border-color: #1B98E0;
+  border-color: #ab916c;
 }
 
 .contact .php-email-form input {
@@ -1176,7 +1176,7 @@ h6 {
 }
 
 .contact .php-email-form button[type=submit] {
-  background: #1B98E0;
+  background: #ab916c;
   border: 0;
   padding: 10px 30px;
   color: #fff;
@@ -1208,7 +1208,7 @@ h6 {
 .error-404 h1 {
   font-size: 180px;
   font-weight: 700;
-  color: #1B98E0;
+  color: #ab916c;
   margin-bottom: 0;
   line-height: 150px;
 }
@@ -1216,7 +1216,7 @@ h6 {
 .error-404 h2 {
   font-size: 24px;
   font-weight: 700;
-  color: #012970;
+  color: #455643;
   margin-bottom: 30px;
 }
 
@@ -1248,14 +1248,14 @@ h6 {
 
 .footer .copyright {
   text-align: center;
-  color: #012970;
+  color: #455643;
 }
 
 .footer .credits {
   padding-top: 5px;
   text-align: center;
   font-size: 13px;
-  color: #012970;
+  color: #455643;
 }
 
 .grid-cols-7 {

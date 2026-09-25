@@ -1,0 +1,253 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Edit Pricing</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/portal/pricing">Pricing</a></li>
+        <li class="breadcrumb-item active">Edit Pricing</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Edit Pricing</h5>
+
+            <form action="/portal/pricing-v2/<%= price.id %>/update" method="POST">
+
+                <div class="row">
+
+                    <div class="col-sm-8">
+
+                        <!-- Room -->
+                        <div class="form-floating mb-4">
+                            <select id="room_id" class="form-select" name="room_id" required>
+                                <option value="">Select Room</option>
+
+                                <% rooms_option.forEach(room => { %>
+                                    <option
+                                        value="<%= room.room_name_id %>"
+                                        <%= room.room_name_id === price.room_option_id ? "selected" : "" %>>
+                                        <%= room.room_name_id %> (<%= room.name %>)
+                                    </option>
+                                <% }) %>
+                            </select>
+
+                            <label>Select Room</label>
+                        </div>
+
+
+                        <!-- Season -->
+                        <div class="form-floating mb-4">
+                            <select
+                                id="season_code_id"
+                                class="form-select"
+                                name="season_code">
+
+                                <option value="">All Seasons</option>
+
+                                <% season_code.forEach(item => { %>
+
+                                    <option
+                                        value="<%= item.season_code_id %>"
+                                        <%= item.season_code_id === price.season_code ? "selected" : "" %>>
+
+                                        <%= item.season_code_id %>
+
+                                    </option>
+
+                                <% }) %>
+
+                            </select>
+
+                            <label>Select Season</label>
+                        </div>
+
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+
+                                <div class="form-floating mb-4">
+
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        class="form-control"
+                                        name="weekday_price"
+                                        value="<%= price.weekday_price %>"
+                                        required>
+
+                                    <label>Weekday Price (SAR)</label>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-floating mb-4">
+
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        class="form-control"
+                                        name="weekend_price"
+                                        value="<%= price.weekend_price %>"
+                                        required>
+
+                                    <label>Weekend Price (SAR)</label>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-4">
+                                    <input
+                                        type="number"
+                                        step="1"
+                                        min="1"
+                                        class="form-control"
+                                        name="minimum_stay"
+                                        value="<%= price.minimum_stay || 1%>"
+                                        required>
+                                    <label>Minimum stay days</label>    
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="col-sm-4">
+
+                        <div class="form-outline mb-4">
+                            <label>Start Date</label>
+
+                            <input
+                                type="date"
+                                name="start_date"
+                                class="form-control"
+                                value="<%= new Date(price.start_date).toISOString().split('T')[0] %>"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-outline mb-4">
+
+                            <label>End Date</label>
+
+                            <input
+                                type="date"
+                                name="end_date"
+                                class="form-control"
+                                value="<%= new Date(price.end_date).toISOString().split('T')[0] %>"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-floating mb-4">
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="unique_key"
+                                value="<%= price.unique_key %>">
+
+                            <label>Unique Key</label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button class="btn btn-primary">
+                    Update Pricing
+                </button>
+
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main><!-- End #main -->
+
+<%- include('../partials/components/footer.ejs'); %>
+<script>
+     $(document).ready(function() {
+                $('#hotel_id').on('change', function () {
+                const hotelId = $(this).val();
+                const roomSelect = $('#room_id');
+
+                roomSelect.empty();
+                roomSelect.append('<option value="">Select Room Option</option>');
+
+                if (!hotelId) return;
+
+                $.ajax({
+                    url: `/portal/rooms/options/${hotelId}`,
+                    method: "GET",
+                    success: function (res) {
+                        if (res.success) {
+                            res.data.forEach(item => {
+                                roomSelect.append(`
+                                    <option value="${item.room_option_id}">
+                                        ${item.room_option_id} (${item.room_type_name} - ${item.occupancy})
+                                    </option>
+                                `);
+                            });
+                        }
+                    },
+                    error: function () {
+                        roomSelect.append('<option>Error loading rooms</option>');
+                    }
+                });
+            });
+
+            $("#season_code_id").change(function() {
+
+            const seasonCode = $(this).val();
+            if (!seasonCode) return;
+
+            $.ajax({
+                url: "/portal/get-season-details",
+                type: "POST",
+                data: { season_code_id: seasonCode },
+                success: function(res) {
+                    if (res.success) {
+                        $("input[name='start_date']").val(res.data.start_date);
+                        $("input[name='end_date']").val(res.data.end_date);
+                    } else {
+                        console.log("Season not found");
+                    }
+                },
+                error: function(err) {
+                    console.error("Error:", err);
+                }
+            });
+
+        });
+
+        });
+</script>
+</body>
+</html>

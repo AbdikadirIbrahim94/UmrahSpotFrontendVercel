@@ -14,6 +14,9 @@ import { Payment } from "../entities/Payment";
 import { RoomPrice } from "../entities/RoomPrice";
 import { User } from "../entities/User";
 import nodemailer from 'nodemailer';
+import { BookingTajpark } from "../entities/BookingTajpark";
+import Stripe from "stripe";
+import sendBookingConfirmation from "../lib/nodemailer"
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 interface BookingConfirmationData {
@@ -1967,5 +1970,259 @@ export class ApiController {
       return res.status(500).json({status: false, message: error.message || "Server Error in booking search"});
     }
   }
+
+  static create_payment_intent_tajpark = async (req: Request, res: Response) => {
+    try {
+      const { rooms, guest, guest_name, guest_email } = req.body;
+
+      if (!rooms || !rooms.length || !guest_email) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+
+      let totalAmount = 0;
+      let overallCheckIn: string | null = null;
+      let overallCheckOut: string | null = null;
+
+      for (const room of rooms) {
+        const nights = Math.max(
+          1,
+          Math.round(
+            (new Date(room.check_out).getTime() - new Date(room.check_in).getTime()) / 86400000
+          )
+        );
+        totalAmount += nights * room.price_per_night;
+
+        if (!overallCheckIn || room.check_in < overallCheckIn) overallCheckIn = room.check_in;
+        if (!overallCheckOut || room.check_out > overallCheckOut) overallCheckOut = room.check_out;
+      }
+
+      const bookingRepo = AppDataSource.getRepository(BookingTajpark);
+
+      // 1. Insert a PENDING booking row first
+      const booking = bookingRepo.create({
+        guest_name,
+        guest_email,
+        guest_details: guest,
+        check_in: overallCheckIn as string,
+        check_out: overallCheckOut as string,
+        rooms,
+        amount_paid: totalAmount,
+        status: "pending",
+      });
+      const savedBooking = await bookingRepo.save(booking);
+
+      // 2. Create PaymentIntent, referencing only the booking ID
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(totalAmount * 100),
+        currency: "usd",
+        receipt_email: guest_email,
+        metadata: { booking_id: String(savedBooking.id) },
+      });
+
+      // 3. Store the Stripe payment ID against the booking
+      savedBooking.stripe_payment_id = paymentIntent.id;
+      await bookingRepo.save(savedBooking);
+
+      return res.json({
+        client_secret: paymentIntent.client_secret,
+        booking_id: savedBooking.id,
+      });
+    } catch (error: any) {
+      console.log("error in create_payment_intent_tajpark ;;;;;", error);
+      return res.status(500).json({
+        status: false,
+        message: error.message || "Server Error in payment intent creation",
+      });
+    }
+  };
+
+  // static stripe_webhook_tajpark = async (req: Request, res: Response) => {
+  //   const sig = req.headers["stripe-signature"] as string;
+  //   let event: Stripe.Event;
+
+  //   try {
+  //     event = stripe.webhooks.constructEvent(
+  //       req.body, // must be raw Buffer, not parsed JSON
+  //       sig,
+  //       process.env.STRIPE_WEBHOOK_SECRET as string
+  //     );
+  //   } catch (err: any) {
+  //     console.log("Webhook signature verification failed:", err.message);
+  //     return res.status(400).send(`Webhook Error: ${err.message}`);
+  //   }
+
+  //   const bookingRepo = AppDataSource.getRepository(BookingTajpark);
+
+  //   try {
+  //     if (event.type === "payment_intent.succeeded") {
+  //       const intent = event.data.object as Stripe.PaymentIntent;
+  //       await bookingRepo.update(
+  //         { stripe_payment_id: intent.id },
+  //         { status: "confirmed" }
+  //       );
+  //     }
+
+  //     if (event.type === "payment_intent.payment_failed") {
+  //       const intent = event.data.object as Stripe.PaymentIntent;
+  //       await bookingRepo.update(
+  //         { stripe_payment_id: intent.id },
+  //         { status: "failed" }
+  //       );
+  //     }
+
+  //     return res.json({ received: true });
+  //   } catch (err: any) {
+  //     console.log("error updating booking from webhook ;;;;;", err);
+  //     return res.status(500).json({ received: false, error: err.message });
+  //   }
+  // };
+
+
+  
+  //   static stripe_webhook_tajpark = async (req: Request, res: Response) => {
+  //     console.log("get the req in the sendemail funcion")
+  //   const sig = req.headers["stripe-signature"] as string;
+  //   let event: Stripe.Event;
+  //     const {guest_email ,guest_name ,id ,check_in ,check_out,amount_paid} = req.body ;
+  //     try {
+  //           await sendBookingConfirmation({
+  //             email: guest_email,
+  //             guestName: guest_name,
+  //             bookingNumber: id,
+  //             checkIn: check_in,
+  //             checkOut: check_out,
+  //             totalPrice: amount_paid,
+  //             hotelName: "Taj Park"
+  //           });
+  //           console.log(`Confirmation email sent for booking #${id}`);
+  //         } catch (emailError) {
+  //           console.error("Failed to send email, but booking is confirmed:", emailError);
+  //         }
+
+  //   // try {
+  //   //   event = stripe.webhooks.constructEvent(
+  //   //     req.body, // must be raw Buffer, not parsed JSON
+  //   //     sig,
+  //   //     process.env.STRIPE_WEBHOOK_SECRET as string
+  //   //   );
+  //   // } catch (err: any) {
+  //   //   console.log("Webhook signature verification failed:", err.message);
+  //   //   return res.status(400).send(`Webhook Error: ${err.message}`);
+  //   // }
+
+  //   // const bookingRepo = AppDataSource.getRepository(BookingTajpark);
+
+  //   // try {
+  //   //   if (event.type === "payment_intent.succeeded") {
+  //   //     const intent = event.data.object as Stripe.PaymentIntent;
+
+  //   //     const booking = await bookingRepo.findOne({ 
+  //   //       where: { stripe_payment_id: intent.id } 
+  //   //     });
+        
+  //   //     if (booking) {
+  //   //       booking.status = "confirmed";
+  //   //       await bookingRepo.save(booking);
+
+  //   //       try {
+  //   //         await sendBookingConfirmation({
+  //   //           email: booking.guest_email,
+  //   //           guestName: booking.guest_name,
+  //   //           bookingNumber: booking.id.toString(),
+  //   //           checkIn: booking.check_in.toString(),
+  //   //           checkOut: booking.check_out.toString(),
+  //   //           totalPrice: booking.amount_paid,
+  //   //           hotelName: "Taj Park"
+  //   //         });
+  //   //         console.log(`Confirmation email sent for booking #${booking.id}`);
+  //   //       } catch (emailError) {
+  //   //         console.error("Failed to send email, but booking is confirmed:", emailError);
+  //   //       }
+  //   //     }
+  //   //   }
+
+  //   //   if (event.type === "payment_intent.payment_failed") {
+  //   //     const intent = event.data.object as Stripe.PaymentIntent;
+  //   //     await bookingRepo.update(
+  //   //       { stripe_payment_id: intent.id },
+  //   //       { status: "failed" }
+  //   //     );
+  //   //   }
+
+  //   //   return res.json({ received: true });
+  //   // } catch (err: any) {
+  //   //   console.log("error updating booking from webhook ;;;;;", err);
+  //   //   return res.status(500).json({ received: false, error: err.message });
+  //   // }
+  // };
+
+
+  
+  static stripe_webhook_tajpark = async (req: Request, res: Response) => {
+  const sig = req.headers["stripe-signature"] as string;
+  let event: Stripe.Event;
+
+  // 1. Verify the Stripe Webhook signature (using raw Buffer from express.raw)
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET as string
+    );
+  } catch (err: any) {
+    console.error("Webhook signature verification failed:", err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  const bookingRepo = AppDataSource.getRepository(BookingTajpark);
+
+  // 2. Process Webhook Event
+  try {
+    if (event.type === "payment_intent.succeeded") {
+      const intent = event.data.object as Stripe.PaymentIntent;
+
+      // Fetch booking from database using the Stripe Payment Intent ID
+      const booking = await bookingRepo.findOne({ 
+        where: { stripe_payment_id: intent.id } 
+      });
+
+      if (booking) {
+        booking.status = "confirmed";
+        await bookingRepo.save(booking);
+
+        // Send confirmation email safely
+        try {
+          await sendBookingConfirmation({
+            email: booking.guest_email,
+            guestName: booking.guest_name || "Guest",
+            bookingNumber: booking.id ? String(booking.id) : "",
+            checkIn: booking.check_in ? String(booking.check_in) : "",
+            checkOut: booking.check_out ? String(booking.check_out) : "",
+            totalPrice: booking.amount_paid,
+            hotelName: "Taj Park"
+          });
+          console.log(`Confirmation email sent for booking #${booking.id}`);
+        } catch (emailError) {
+          console.error("Failed to send email, but booking is confirmed:", emailError);
+        }
+      } else {
+        console.warn(`Booking with stripe_payment_id ${intent.id} not found.`);
+      }
+    }
+
+    if (event.type === "payment_intent.payment_failed") {
+      const intent = event.data.object as Stripe.PaymentIntent;
+      await bookingRepo.update(
+        { stripe_payment_id: intent.id },
+        { status: "failed" }
+      );
+    }
+
+    return res.json({ received: true });
+  } catch (err: any) {
+    console.error("Error updating booking from webhook:", err);
+    return res.status(500).json({ received: false, error: err.message });
+  }
+  };
 }
 

@@ -28,7 +28,6 @@ import { User } from "../entities/User";
 import { RoomType } from "../entities/RoomType";
 import { SeasonCode } from "../entities/SeasonCode";
 import { RoomOccupancy } from "../entities/RoomOccupancy";
-import { In } from "typeorm";
 import { error } from "console";
 import { RoomOccupancyPhoto } from "../entities/RoomOccupancyPhoto";
 import { HotelMarkupRate } from "../entities/HotelMarkupRate";
@@ -36,6 +35,7 @@ import { Booking2 } from "../entities/Booking2";
 import { BookingRoom } from "../entities/BookingRoom";
 import { BookingCustomer } from "../entities/BookingCustomer";
 import { Payment } from "../entities/Payment";
+import { Not, In } from "typeorm";
 interface ServiceItem {
   value: string;
   thumbnail: string;
@@ -377,6 +377,7 @@ export class DashboardController {
 
       // ✅ Fetch all rooms with hotel relation, ordered by name
       const rooms = await roomRepo.find({
+        where: { hotel: { id: 32 }, id: Not(In([66, 49])) }, // ✅ Only rooms for hotel with ID 32
         relations: ["hotel", "room_type"],
         order: { name: "ASC" },
       });
@@ -998,6 +999,8 @@ export class DashboardController {
 
       const {room_name_id, name,room_type, description, hotel_id, maximum_guest,view_from_room, bed_type, area, price, extras } = req.body;
 
+      console.log("room extra coming ;;;;;;;;;", req.body);
+
       // ✅ Create new room instance
       const room = RoomRepo.create({
         room_name_id:room_name_id,
@@ -1012,59 +1015,7 @@ export class DashboardController {
         view_from_room : Array.isArray(view_from_room) ? view_from_room : []
       });
 
-      // ✅ Handle thumbnail image (temporarily)
-      // const files = req.files as { [field: string]: UploadedFile[] } | undefined;
-      // console.log("Files received:", files);
-
-      // const thumb = files?.image?.[0];
-      // let tempThumbPath: string | null = null;
-
-      // if (thumb?.filename) {
-      //   console.log("Thumbnail file:", thumb);
-      //   tempThumbPath = thumb.path || `/uploads/${thumb.filename}`;
-      //   room.image_url = `/uploads/${thumb.filename}`; // Temporary path
-      // }
-
-      // // ✅ Save room first to get the ID
-      // const savedRoom = await RoomRepo.save(room);
-      // console.log("Room created successfully with ID:", savedRoom.id);
-
-      // // ✅ Create room-specific upload directory
-      // const roomUploadDir = path.join(process.cwd(), "public", "uploads", "room", savedRoom.id.toString());
-      // if (!fs.existsSync(roomUploadDir)) {
-      //   fs.mkdirSync(roomUploadDir, { recursive: true });
-      //   console.log(`Created directory: ${roomUploadDir}`);
-      // }
-
-      // // ✅ Move thumbnail to room-specific folder
-      // if (thumb?.filename) {
-      //   // Check multiple possible locations
-      //   const possiblePaths = [
-      //     thumb.path, // Original path from multer (most reliable)
-      //     path.join(process.cwd(), "uploads", thumb.filename),
-      //     path.join(process.cwd(), "public", "uploads", thumb.filename)
-      //   ];
-
-      //   let oldPath: string | null = null;
-      //   for (const p of possiblePaths) {
-      //     console.log(`Checking thumbnail path: ${p}`);
-      //     if (p && fs.existsSync(p)) {
-      //       oldPath = p;
-      //       console.log(`Found thumbnail at: ${p}`);
-      //       break;
-      //     }
-      //   }
-
-      //   if (oldPath) {
-      //     const newPath = path.join(roomUploadDir, thumb.filename);
-      //     fs.renameSync(oldPath, newPath);
-      //     savedRoom.image_url = `/uploads/room/${savedRoom.id}/${thumb.filename}`;
-      //     await RoomRepo.save(savedRoom);
-      //     console.log(`Moved thumbnail from ${oldPath} to: ${newPath}`);
-      //   } else {
-      //     console.error(`Thumbnail file not found. Checked paths:`, possiblePaths);
-      //   }
-      // }
+      
       const files = req.files as {
         image?: MulterS3File[];
         gallery_images?: MulterS3File[];
@@ -1080,47 +1031,7 @@ export class DashboardController {
       const savedRoom = await RoomRepo.save(room);
       console.log("Room created:", savedRoom.id);
 
-      // ✅ Handle gallery images - move to room-specific folder
-      // const gallery = files?.gallery_images ?? [];
-      // console.log("Adding gallery images:", gallery.length);
-
-      // for (const img of gallery) {
-      //   console.log("Processing gallery image:", img.filename);
-        
-      //   // Check multiple possible locations
-      //   const possiblePaths = [
-      //     img.path, // Original path from multer (most reliable)
-      //     path.join(process.cwd(), "uploads", img.filename),
-      //     path.join(process.cwd(), "public", "uploads", img.filename)
-      //   ];
-
-      //   let oldPath: string | null = null;
-      //   for (const p of possiblePaths) {
-      //     console.log(`Checking gallery path: ${p}`);
-      //     if (p && fs.existsSync(p)) {
-      //       oldPath = p;
-      //       console.log(`Found gallery image at: ${p}`);
-      //       break;
-      //     }
-      //   }
-
-      //   if (oldPath) {
-      //     const newPath = path.join(roomUploadDir, img.filename);
-      //     fs.renameSync(oldPath, newPath);
-      //     console.log(`Moved gallery image from ${oldPath} to: ${newPath}`);
-
-      //     // Only save to database after successful file move
-      //     const newPhoto = roomPhotoRepo.create({
-      //       room_id: savedRoom.id,
-      //       image_url: `/uploads/room/${savedRoom.id}/${img.filename}`,
-      //     });
-      //     console.log("Saving gallery photo:", newPhoto);
-      //     await roomPhotoRepo.save(newPhoto);
-      //   } else {
-      //     console.error(`Gallery image not found. Checked paths:`, possiblePaths);
-      //     console.error(`Skipping database save for missing file: ${img.filename}`);
-      //   }
-      // }
+      
        const gallery = files?.gallery_images ?? [];
 
       if (gallery.length > 0) {
@@ -1223,6 +1134,8 @@ export class DashboardController {
         .getMany();
 
         // return res.send(occupancies);
+
+        console.log("room extra coming ;;;;;;;", room_extras);
 
     // 🔥 Render page
     return res.render("room/edit", {
@@ -2120,7 +2033,7 @@ export class DashboardController {
         base_meal_plan,
         website_description,
         room_option_id,
-        rooms_left
+        rooms_left: rooms_left === "" ? null : Number(rooms_left)
       };
 
       // Handle file uploads
@@ -2208,6 +2121,7 @@ export class DashboardController {
         .createQueryBuilder("occupancy")
         .leftJoinAndSelect("occupancy.room", "room")
         .leftJoinAndSelect("room.hotel", "hotel") 
+        .where("hotel.id = :hotelId", { hotelId: 32 })
         .orderBy("occupancy.id", "DESC")
         .getMany();
 
