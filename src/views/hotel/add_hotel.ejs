@@ -1,0 +1,328 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+
+<style>
+  .image-container {
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+  }
+  .rounded-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .remove-field {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    font-size: 12px;
+  }
+</style>
+
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Add Hotel</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/portal/hotel">Hotel</a></li>
+        <li class="breadcrumb-item active">Add Hotel</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Add Hotel</h5>
+
+            <!-- Hotel Add Form -->
+            <form action="/portal/hotel/create" method="POST" enctype="multipart/form-data">
+              <div class="row">
+                <div class="col-sm-8">
+
+                  <div class="form-floating mb-4">
+                    <input type="text" class="form-control border-gray" id="name_id" name="name_id" placeholder="Hotel Id (required)">
+                    <label for="name_id">Hotel Id (required)</label>
+                  </div>
+
+                  <div class="form-floating mb-4">
+                    <input type="text" class="form-control border-gray" id="name" name="name" placeholder="Name (required)">
+                    <label for="name">Name (required)</label>
+                  </div>
+
+                  <div class="form-floating mb-4">
+                    <select id="hotel_cities" class="form-select border-gray" aria-label="City" name="hotel_cities">
+                      <option value="">Select City</option>
+                      <% cities.forEach((item)=>{ %>
+                        <option value="<%= item.id %>"><%= item.name %></option>
+                      <% }) %>
+                    </select>
+                    <label class="form-label" for="hotel_cities">Select City</label>
+                  </div>
+
+                  <div class="form-floating mb-4">
+                    <textarea class="form-control border-gray" id="address" rows="4" name="address" style="height: 100px;"></textarea>
+                    <label class="form-label" for="address">Address</label>
+                  </div>
+
+                  <div class="form-floating mb-4">
+                    <input type="text" class="form-control border-gray" id="location_map_url" name="location_map_url" placeholder="Location Map URL">
+                    <label for="location_map_url">Map URL</label>
+                  </div>
+
+                  <!-- Thumbnail Upload -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label label-gray" for="thumbnail_input">Thumbnail</label>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                      <div>
+                        <label class="image-container-empty" for="thumbnail_input">
+                          <i class="bi bi-file-image"></i>
+                          <span>Add Image</span>
+                        </label>
+                        <input type="file" id="thumbnail_input" name="image" accept="image/*" style="display:none;" />
+                      </div>
+
+                      <div class="image-container" id="thumbnail_preview"></div>
+                    </div>
+                  </div>
+
+                  <!-- Gallery Upload -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label label-gray" for="gallery_images_input">Gallery Images</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start;" id="gallery_preview_container">
+                      <label class="image-container-empty" for="gallery_images_input" id="gallery_images_label">
+                        <i class="bi bi-images"></i>
+                        <span>Add Images</span>
+                      </label>
+                      <input 
+                        type="file" 
+                        id="gallery_images_input" 
+                        name="gallery_images" 
+                        multiple 
+                        accept="image/*" 
+                        style="display:none;"
+                      />
+                    </div>
+                    <input type="hidden" id="deleted_photos" name="deleted_photos" value="" />
+                  </div>
+
+                  <!-- Nearby Places -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label">Nearby Places & Distances</label>
+                    <div class="row">
+                      <% hotel_nearby_places.forEach((place, i) => { %>
+                        <div class="col-md-8 mb-2 d-flex align-items-center">
+                          <label class="form-label me-2" style="width: 150px;"><%= place.name %></label>
+                          <input type="hidden" name="nearby_places[<%= i %>][place]" value="<%= place.name %>" />
+                          <input type="hidden" name="nearby_places[<%= i %>][thumbnail]" value="<%= place.thumbnail %>" />
+                          <input 
+                            type="text" 
+                            class="form-control me-2"
+                            name="nearby_places[<%= i %>][distance]"
+                            placeholder="e.g. 500m or 1km"
+                          />
+                          <input 
+                            type="text" 
+                            class="form-control"
+                            name="nearby_places[<%= i %>][map_url]"
+                            placeholder="e.g. map url"
+                          />
+                        </div>
+                      <% }) %>
+                    </div>
+                  </div>
+
+                  <!-- Youtube url  -->
+                   <div class="form-floating mb-4">
+                    <input type="text" class="form-control border-gray" id="youtube_video_url" name="youtube_video_url" placeholder="Youtube URL">
+                    <label for="youtube_video_url">Youtube URL</label>
+                  </div>
+
+                    <!-- google Comment url  -->
+                   <div class="form-floating mb-4">
+                    <input type="text" class="form-control border-gray" id="google_comments_url" name="google_comments_url" placeholder="Google Comments URL">
+                    <label for="google_comments_url">Google Comments URL</label>
+                  </div>
+
+                  <div class="row gx-4">
+                    <div class="col-6">
+                      <div class="form-outline mb-4">
+                        <label class="form-label" for="check_in_from">Check In From</label>
+                        <input type="time"  id="check_in_from" class="form-control" name="check_in_from" />
+                      </div>
+                    </div>
+
+                    <div class="col-6">
+                      <div class="form-outline mb-4">
+                        <label class="form-label" for="check_out_until">Check Out Until</label>
+                        <input type="time"  id="check_out_until" class="form-control" name="check_out_until" />
+                      </div>
+                    </div>
+                  </div>
+
+                   <div class="form-floating mb-4">
+                    <textarea class="form-control border-gray" id="description" rows="4" name="description" style="height: 100px;"></textarea>
+                    <label class="form-label" for="description">Description</label>
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <!-- Distance to Haram -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="distance_haram_minutes">Distance To Haram (in minutes)</label>
+                    <input type="text" id="distance_haram_minutes" class="form-control" name="distance_haram_minutes" />
+                  </div>
+
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="distance_haram_mitres">Distance To Haram (in mitres)</label>
+                    <input type="text" id="distance_haram_mitres" class="form-control" name="distance_haram_mitres" />
+                  </div>
+                  
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="price">Price per night</label>
+                    <input type="text" id="price" class="form-control" name="price" />
+                  </div>
+
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="rating">Rating</label>
+                    <input type="text" id="rating" class="form-control" name="rating" />
+                  </div>
+
+
+                  <!-- Hotel Services -->
+                  <div class="form-outline mb-4">
+                    <h5 class="form-label label-gray">Hotel Services</h5>
+                    <div class="row mb-3">
+                      <% hotel_services.forEach((item, i) => { %>
+                        <div class="col-sm-6">
+                          <div class="form-check">
+                            <input 
+                              class="form-check-input border-gray-color"
+                              type="checkbox"
+                              name="hotel_services[<%= i %>][value]"
+                              value="<%= item.name %>"
+                            >
+                            <input type="hidden" name="hotel_services[<%= i %>][thumbnail]" value="<%= item.thumbnail %>">
+                            <label class="form-check-label"><%= item.name %></label>
+                          </div>
+                        </div>
+                      <% }) %>
+                    </div>
+                  </div>
+
+                  
+
+                  <!-- Inner Amenities -->
+                  <div class="form-outline mb-4">
+                    <h5 class="form-label label-gray">Inner Amenities</h5>
+                    <div class="row mb-3">
+                      <div class="col-sm-10">
+                        <% hotel_amenities.forEach((item, i) => { %>
+                          <div class="form-check">
+                            <input 
+                              class="form-check-input border-gray-color"
+                              type="checkbox"
+                              name="inner_amenities[<%= i %>][value]"
+                              value="<%= item.name %>"
+                            >
+                            <input type="hidden" name="inner_amenities[<%= i %>][thumbnail]" value="<%= item.thumbnail %>">
+                            <label class="form-check-label"><%= item.name %></label>
+                          </div>
+                        <% }) %>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-floating mb-4">
+                    <textarea class="form-control border-gray" id="child_policy" rows="4" name="child_policy" style="height: 100px;"></textarea>
+                    <label class="form-label" for="child_policy">Child Policy</label>
+                  </div>
+
+                  <div class="form-floating mb-4">
+                    <textarea class="form-control border-gray" id="cancellation_policy" rows="4" name="cancellation_policy" style="height: 100px;"></textarea>
+                    <label class="form-label" for="cancellation_policy">Cancellation Policy</label>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block mb-4">Create Hotel</button>
+              <div id="spiner_loading"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main><!-- End #main -->
+
+<%- include('../partials/components/footer.ejs'); %>
+
+<!-- Gallery Scripts -->
+<script src="/portal/assets/js/gallery.js"></script>
+<script src="/portal/assets/js/dropzone.js"></script>
+<script src="/portal/assets/js/image_upload.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const galleryInput = document.getElementById("gallery_images_input");
+  const galleryLabel = document.getElementById("gallery_images_label");
+  const previewContainer = document.getElementById("gallery_preview_container");
+
+  // Gallery preview
+  galleryInput?.addEventListener("change", (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imgDiv = document.createElement("div");
+        imgDiv.className = "image-container";
+        imgDiv.innerHTML = `
+          <img src="${e.target.result}" alt="Preview" class="rounded-image" />
+          <button class="btn btn-danger remove-field" type="button">X</button>
+        `;
+        previewContainer.appendChild(imgDiv);
+
+        imgDiv.querySelector("button").addEventListener("click", () => {
+          imgDiv.remove();
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // Thumbnail preview
+  const fileInput = document.getElementById("thumbnail_input");
+  const thumbPreview = document.getElementById("thumbnail_preview");
+  if (fileInput) {
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        thumbPreview.innerHTML = `
+          <img src="${e.target.result}" alt="Thumbnail" class="rounded-image" />
+          <button class="btn btn-danger remove-field" type="button">X</button>
+        `;
+        thumbPreview.querySelector("button").addEventListener("click", () => {
+          fileInput.value = "";
+          thumbPreview.innerHTML = "";
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+});
+</script>
+</body>
+</html>

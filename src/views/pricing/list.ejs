@@ -1,0 +1,241 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+<!-- Buttons extension CSS -->
+<%- include('../partials/components/sidebar.ejs'); %>
+<style>
+  .dt-buttons {
+    margin-bottom: 15px;
+  }
+  
+  .dt-button {
+    margin-right: 5px !important;
+  }
+</style>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Pricing</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/portal/pricing">Pricing</a></li>
+          <li class="breadcrumb-item"><a class="active" href="/portal/pricing">Pricing List</a></li>
+        </ol>
+      </nav>
+    </div>
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Pricing</h5>
+
+                <!-- Import/Export Section -->
+            <div class="import-export-section ">
+              <div class="upload-area mb-2">
+                <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+                <button class="btn btn-primary btn-sm mb-2" onclick="document.getElementById('csvFileInput').click()">
+                  <i class="bi bi-cloud-upload"></i> Import CSV
+                </button>
+              </div>
+              <div id="exportButtons"></div>
+            </div>
+
+              <table class="table datatable" id="pricing_table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">hotel_id</th>
+                    <th scope="col">room_option_id</th>
+                    <th scope="col">season_code</th>
+                    <th scope="col">day_type</th>
+                    <th scope="col">start_date</th>
+                    <th scope="col">end_date</th>
+                    <!-- <th scope="col">cost_sar</th>
+                    <th scope="col">hb_cost_sar</th>
+                    <th scope="col">fb_cost_sar</th> -->
+                    <th scope="col">Add_Breakfast</th>
+                    <th scope="col">Add_lunch</th>
+                    <th scope="col">Add_Diner</th>
+                    <th scope="col">selling_price_usd</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                     <% if (prices && prices.length > 0) { %>
+                  <% let index = 1 %>
+                  <% prices.forEach((item) => { %>
+                    <tr>
+                      <td><%= index %></td>
+                      <td>
+                        <strong><%= item.hotel_name %></strong><br>
+                        <small class="text-muted"><%= item.hotel_id %></small>
+                      </td>
+                      <td>
+                        <%= item.room_option_name %><br>
+                        <small class="text-muted"><%= item.room_option_id %></small>
+                      </td>
+                      <td>
+                        <%= item.season_name %><br>
+                        <small class="text-muted"><%= item.season_code %></small>
+                      </td>
+                     
+                      <td>
+                        <% if (item.day_type === 'WEEKDAY') { %>
+                          <span class="badge bg-primary">Weekday</span>
+                        <% } else { %>
+                          <span class="badge bg-warning">Weekend</span>
+                        <% } %>
+                      </td>
+                       <td>
+                        <small class="text-muted"><%= item.start_date %></small>
+                      </td>
+                      <td>
+                        <small class="text-muted"><%= item.end_date %></small>
+                      </td>
+                      <!-- <td><%= parseFloat(item.cost_sar).toFixed(2) %></td>
+                      <td><%= item.hb_cost_sar ? parseFloat(item.hb_cost_sar).toFixed(2) : "" %></td>
+                      <td><%= item.fb_cost_sar ? parseFloat(item.fb_cost_sar).toFixed(2) : "" %></td> -->
+                      <td><%= parseFloat(item.bb_upgrade_sar).toFixed(2) %></td>
+                      <td><%= parseFloat(item.hb_upgrade_sar).toFixed(2) %></td>
+                      <td><%= parseFloat(item.fb_upgrade_sar).toFixed(2) %></td>
+                      <td><%= parseFloat(item.selling_price_usd).toFixed(2) %></td>
+                      <td>
+                        <a href="/portal/pricing/<%= item.id %>/edit" class="btn btn-sm btn-primary" title="Edit">
+                          <i class="bi bi-pencil"></i>
+                        </a>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete(<%= item.id %>)" title="Delete">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <% index++ %>
+                  <% }) %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="13" class="text-center">
+                      <p class="text-muted my-4">No pricing data available</p>
+                      <a href="/portal/pricing/create" class="btn btn-primary">Add First Price</a>
+                    </td>
+                  </tr>
+                <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+ 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <%- include('../partials/components/footer.ejs'); %>
+
+
+<script>
+  $(document).ready(function() {
+    // Handle CSV file upload
+    document.getElementById('csvFileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      
+      if (!file) return;
+
+      if (!file.name.endsWith('.csv')) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid File',
+          text: 'Please upload a CSV file'
+        });
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('csvFile', file);
+
+      Swal.fire({
+        title: 'Uploading...',
+        html: `
+          <p>Processing your CSV file</p>
+          <p class="text-muted small">File: ${file.name}</p>
+        `,
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      fetch('/portal/pricing/import', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          let htmlContent = `<p>${data.message}</p>`;
+          
+          if (data.stats) {
+            htmlContent += `
+              <div class="mt-3 text-start">
+                <strong>Import Summary:</strong>
+                <ul class="list-unstyled mt-2">
+                  <li>✅ New Records: ${data.stats.created}</li>
+                  <li>🔄 Updated Records: ${data.stats.updated}</li>
+                  <li>📊 Total Processed: ${data.stats.total}</li>
+                  ${data.stats.errors > 0 ? `<li>❌ Errors: ${data.stats.errors}</li>` : ''}
+                </ul>
+              </div>
+            `;
+          }
+
+          if (data.errors && data.errors.length > 0) {
+            htmlContent += `
+              <div class="mt-3">
+                <strong>Errors:</strong>
+                <pre style="text-align: left; max-height: 150px; overflow-y: auto; font-size: 12px; background: #f8f9fa; padding: 10px; border-radius: 4px;">${data.errors.join('\n')}</pre>
+              </div>
+            `;
+          }
+
+          Swal.fire({
+            icon: data.stats && data.stats.errors > 0 ? 'warning' : 'success',
+            title: data.stats && data.stats.errors > 0 ? 'Partial Success' : 'Success!',
+            html: htmlContent,
+            confirmButtonText: 'OK',
+            width: '600px'
+          }).then(() => {
+            window.location.reload();
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Import Failed',
+            html: `<p>${data.message || 'Failed to import CSV'}</p>
+                   ${data.error ? `<p class="text-muted small">${data.error}</p>` : ''}`
+          });
+        }
+      })
+      .catch(error => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Upload Error',
+          text: error.message || 'An error occurred while uploading the file'
+        });
+      })
+      .finally(() => {
+        e.target.value = '';
+      });
+    });
+
+    
+  });
+</script>
+
+</body>
+
+</html>

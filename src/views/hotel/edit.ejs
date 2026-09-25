@@ -1,0 +1,685 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+ <style>
+    .image-container {
+      position: relative;
+      display: inline-block;
+      margin: 5px;
+    }
+    .rounded-image {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .remove-field {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 25px;
+      height: 25px;
+      padding: 0;
+      font-size: 12px;
+    }
+  </style>
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<%
+  const servicesList = Array.isArray(hotel.services) ? hotel.services : [];
+  const amenitiesList = Array.isArray(hotel.amenities) ? hotel.amenities : [];
+%>
+
+  <main id="main" class="main">
+    <div class="pagetitle">
+      <h1>Edit Hotel</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/portal/hotel">Hotel</a></li>
+          <li class="breadcrumb-item active">Edit Hotel</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="d-flex">
+          <div id="edit_video" class="card-title cursor_pointer">Edit Hotel</div>
+          <div id="complete_video" class="card-title ms-4 cursor_pointer">Hotel Rooms</div>
+           <div class="ms-5">
+            <a href="/portal/room/add?hotelId=<%= hotel.id %>" class="btn btn-sm btn-primary">Add Hotel Room</a>
+          </div>
+        </div>
+
+      <div class="row" id="show_edit_video">
+        <div class="col-lg-12">
+
+          <div class="card ">
+            <div class="card-body ">
+              <h5 class="card-title">Edit Hotel</h5>
+
+              <!-- Table with stripped rows -->
+              <form action="/portal/hotel/<%= hotel.id %>/update" method="Post"  enctype="multipart/form-data">
+                <!-- Name input -->
+
+                <div class="row">
+                  <div class="col-sm-8">
+                    <div class="form-floating mb-4">
+                      <input type="text" class="form-control border-gray" id="name_id" name="name_id" placeholder="Name (required)" value="<%= hotel.name_id %>">
+                      <label for="name_id">Name (required)</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                      <input type="text" class="form-control border-gray" id="name" name="name" placeholder="Name (required)" value="<%= hotel.name %>">
+                      <label for="name">Name (required)</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                      <select id="hotel_cities" class="form-select border-gray" aria-label="Language" name="hotel_cities">
+                        <option value="">Select City</option>
+                        <% cities.forEach((item)=>{ %>
+                            <option value="<%= item.id %>" <%= hotel.city.id === item.id ? 'selected' : '' %>><%= item.name %></option>
+                        <%  }) %>
+                      </select>
+                        <label class="form-label" for="position">Select City</label>
+                    </div>
+              
+                    <div class="form-floating mb-4">
+                      <textarea class="form-control border-gray" id="address" rows="4" name="address"  style="height: 100px;"><%= hotel.address %></textarea>
+                        <label class="form-label" for="address">Address</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                    <input type="text" class="form-control border-gray" id="location_map_url" name="location_map_url" placeholder="Location Map URL" value="<%= hotel.location_map_url %>">
+                    <label for="location_map_url">Map URL</label>
+                  </div>
+
+                    <div class="form-outline mb-4">
+                        <label class="form-label label-gray" for="thumbnail_input">Thumbnail</label>
+
+                        <div style="display: flex; gap: 10px; align-items: flex-start;">
+                            <div>
+                            <!-- Shown if no image is uploaded -->
+                            <label class="image-container-empty" for="thumbnail_input">
+                                <i class="bi bi-file-image"></i>
+                                <span>Add Image</span>
+                            </label>
+                            <input type="file" id="thumbnail_input" name="image" accept="image/*" style="display:none;" />
+                            </div>
+
+                            <!-- Preview area -->
+                            <% if (hotel.image_url) { %>
+                            <div class="image-container" id="thumbnail_preview">
+                                <img src="<%= hotel.image_url %>" alt="Hotel Thumbnail" class="rounded-image" />
+                                <button class="btn btn-danger remove-field" type="button" id="remove_thumbnail_btn">X</button>
+                            </div>
+                            <% } else { %>
+                            <div class="image-container" id="thumbnail_preview"></div>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-outline mb-4">
+                      <label class="form-label label-gray" for="gallery_images">Gallery Images</label>
+
+                      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start;" id="gallery_preview_container">
+                        <label class="image-container-empty" for="gallery_images_input" id="gallery_images_label">
+                          <i class="bi bi-images"></i>
+                          <span>Add Images</span>
+                        </label>
+                        <input 
+                          type="file" 
+                          id="gallery_images_input" 
+                          name="gallery_images" 
+                          multiple 
+                          accept="image/*" 
+                          style="display:none;"
+                        />
+
+                        <% if (hotel.photos && hotel.photos.length > 0) { %>
+                          <% hotel.photos.forEach((photo) => { %>
+                            <div class="image-container" data-photo-id="<%= photo.id %>">
+                              <img src="<%= photo.image_url %>" alt="Hotel Gallery Image" class="rounded-image" />
+                              <button class="btn btn-danger remove-field remove-existing-image" type="button" data-photo-id="<%= photo.id %>">X</button>
+                            </div>
+                          <% }) %>
+                        <% } %>
+                      </div>
+
+                      <input type="hidden" id="deleted_photos" name="deleted_photos" value="" />
+                    </div> -->
+
+                    <div class="form-outline mb-4">
+  <label class="form-label label-gray" for="gallery_images">Gallery Images</label>
+  <p class="text-muted small">Drag images to reorder them</p>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start;" id="gallery_preview_container">
+    <!-- File input for multiple images -->
+    <label class="image-container-empty" for="gallery_images_input" id="gallery_images_label">
+      <i class="bi bi-images"></i>
+      <span>Add Images</span>
+    </label>
+    <input 
+      type="file" 
+      id="gallery_images_input" 
+      name="gallery_images" 
+      multiple 
+      accept="image/*" 
+      style="display:none;"
+    />
+
+    <!-- Existing uploaded gallery preview (sorted by position) -->
+    <div id="sortable_gallery" style="display: contents;">
+      <% if (hotel.photos && hotel.photos.length > 0) { %>
+        <% hotel.photos.sort((a, b) => a.position - b.position).forEach((photo) => { %>
+          <div class="image-container draggable-image" data-photo-id="<%= photo.id %>" draggable="true">
+            <img src="<%= photo.image_url %>" alt="Hotel Gallery Image" class="rounded-image" />
+            <button class="btn btn-danger remove-field remove-existing-image" type="button" data-photo-id="<%= photo.id %>">X</button>
+            <div class="drag-handle" title="Drag to reorder">⋮⋮</div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Hidden inputs -->
+  <input type="hidden" id="deleted_photos" name="deleted_photos" value="" />
+  <input type="hidden" id="photo_order" name="photo_order" value="" />
+</div>
+
+<style>
+  .image-container {
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+    cursor: move;
+  }
+  
+  .draggable-image {
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .draggable-image.dragging {
+    opacity: 0.5;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+  
+  .draggable-image.drag-over {
+    border: 2px dashed #007bff;
+  }
+  
+  .drag-handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    font-weight: bold;
+  }
+  
+  .draggable-image:hover .drag-handle {
+    opacity: 1;
+  }
+  
+  .rounded-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .remove-field {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    font-size: 12px;
+    z-index: 10;
+  }
+</style>
+
+                    <div class="form-outline mb-4">
+                        <label class="form-label">Nearby Places & Distances</label>
+                        <div class="row">
+                            <% hotel_nearby_places.forEach((place, i) => { 
+                                const existingPlace = hotel.nearby_places?.find(p => p.place === place.name);
+                                const distanceValue = existingPlace ? existingPlace.distance : '';
+                                const mapUrl = existingPlace ? existingPlace.map_url : '';
+                            %>
+                            <div class="col-md-8 mb-2 d-flex align-items-center">
+                                <label class="form-label me-2" style="width: 150px;"><%= place.name %></label>
+                                
+                                <input 
+                                type="hidden" 
+                                name="nearby_places[<%= i %>][place]" 
+                                value="<%= place.name %>"
+                                />
+                                <input 
+                                type="hidden" 
+                                name="nearby_places[<%= i %>][thumbnail]" 
+                                value="<%= place.thumbnail %>"
+                                />
+                                <input 
+                                type="text" 
+                                class="form-control me-2"
+                                name="nearby_places[<%= i %>][distance]"
+                                placeholder="e.g. 500m or 1km"
+                                value="<%= distanceValue || '' %>"
+                                />
+                                 <input 
+                                  type="text" 
+                                  class="form-control"
+                                  name="nearby_places[<%= i %>][map_url]"
+                                  placeholder="e.g. map url"
+                                  value="<%= mapUrl || '' %>"
+                                />
+                            </div>
+                            <% }) %>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                      <input type="text" class="form-control border-gray" id="youtube_video_url" name="youtube_video_url" placeholder="Youtube URL" value="<%= hotel.youtube_video_url %>"/>
+                      <label for="youtube_video_url">Youtube URL</label>
+                    </div>
+
+                      <!-- google Comment url  -->
+                    <div class="form-floating mb-4">
+                      <input type="text" class="form-control border-gray" id="google_comments_url" name="google_comments_url" placeholder="Google Comments URL" value="<%= hotel.google_comments_url %>"/>
+                      <label for="google_comments_url">Google Comments URL</label>
+                    </div>
+
+                    <div class="row gx-4">
+                    <div class="col-6">
+                      <div class="form-outline mb-4">
+                        <label class="form-label" for="check_in_from">Check In From</label>
+                        <input type="time"  id="check_in_from" class="form-control" name="check_in_from" value="<%= hotel.check_in_from %>"/>
+                      </div>
+                    </div>
+
+                    <div class="col-6">
+                      <div class="form-outline mb-4">
+                        <label class="form-label" for="check_out_until">Check Out Until</label>
+                        <input type="time"  id="check_out_until" class="form-control" name="check_out_until" value="<%= hotel.check_out_until %>"/>
+                      </div>
+                    </div>
+                  </div>
+
+                   <div class="form-floating mb-4">
+                    <textarea class="form-control border-gray" id="description" rows="4" name="description" style="height: 100px; "><%= hotel.description %></textarea>
+                    <label class="form-label" for="description">Description</label>
+                  </div>
+
+                  </div>
+
+                  <div class="col-sm-4">
+                    <div class="form-outline mb-4">
+                      <label class="form-label" for="position">Distance To Haram (in minutes)</label>
+                      <input type="text" id="distance_haram_minutes" class="form-control" name="distance_haram_minutes" value="<%= hotel.distance_haram_minutes %>"  />
+                    </div>
+
+                    <div class="form-outline mb-4">
+                      <label class="form-label" for="position">Distance To Haram (in metres)</label>
+                      <input type="text" id="distance_haram_mitres" class="form-control" name="distance_haram_mitres" value="<%= hotel.distance_haram_mitres %>"  />
+                    </div>
+
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="price">Price per night</label>
+                    <input type="text" id="price" class="form-control" name="price" value="<%= hotel.price %>" />
+                  </div>
+
+                  <div class="form-outline mb-4">
+                      <label class="form-label" for="rating">Rating</label>
+                      <input type="text" id="rating" class="form-control" name="rating" value="<%= hotel.rating %>"/>
+                    </div>
+
+                    <div class="form-outline mb-4">
+                    <h5 class="form-label label-gray">Hotel Services</h5>
+                    <div class="row mb-3">
+                        <% hotel_services.forEach((item, i) => {
+                        const isChecked = servicesList.some(s => s.value === item.name);
+                        const existingThumb = (servicesList.find(s => s.value === item.name)?.thumbnail) || '';
+                        %>
+                        <div class="col-sm-6">
+                            <div class="form-check">
+                            <input 
+                                class="form-check-input border-gray-color"
+                                type="checkbox"
+                                name="hotel_services[<%= i %>][value]"
+                                value="<%= item.name %>"
+                                <%= isChecked ? 'checked' : '' %>
+                            >
+                            <input
+                                type="hidden"
+                                name="hotel_services[<%= i %>][thumbnail]"
+                                value="<%= item.thumbnail %>"
+                            >
+                            <label class="form-check-label"><%= item.name %></label>
+                            </div>
+                        </div>
+                        <% }) %>
+                    </div>
+                    </div>
+
+                    <div class="form-outline mb-4">
+                      <h5 class="form-label label-gray">Inner Amenities</h5>
+                      <div class="row mb-3">
+                        <div class="col-sm-10">
+                          <% hotel_amenities.forEach((item, i) => {
+                            const isChecked = amenitiesList.some(a => a.value === item.name);
+                          %>
+                            <div class="form-check">
+                              <input 
+                                class="form-check-input border-gray-color"
+                                type="checkbox"
+                                name="inner_amenities[<%= i %>][value]"
+                                value="<%= item.name %>"
+                                <%= isChecked ? 'checked' : '' %>
+                              >
+                              <input
+                                type="hidden"
+                                name="inner_amenities[<%= i %>][thumbnail]"
+                                value="<%= item.thumbnail %>"
+                              >
+                              <label class="form-check-label"><%= item.name %></label>
+                            </div>
+                          <% }) %>
+                          </div>
+                          
+                      </div>
+                       
+                    </div>
+                    <div class="form-floating mb-4">
+                          <textarea class="form-control border-gray" id="child_policy" rows="4" name="child_policy" style="height: 100px;"><%= hotel.child_policy %></textarea>
+                          <label class="form-label" for="child_policy">Child Policy</label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                          <textarea class="form-control border-gray" id="cancellation_policy" rows="4" name="cancellation_policy" style="height: 100px;" ><%= hotel.cancellation_policy %></textarea>
+                          <label class="form-label" for="cancellation_policy">Cancellation Policy</label>
+                        </div>
+                 
+                  </div>
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary btn-block mb-4">Send</button>
+                <div id="spiner_loading"></div>
+              </form>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+       <div class="row" id="show_complete_video" style="display: none;">
+           <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Rooms</h5>
+
+              <table class="table datatable" id="room_table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Max Guest</th>
+                    <th scope="col">Bed Type</th>
+                    <th scope="col">Area</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% let index = 1 %>
+                    <% rooms.forEach((item) => { %>
+                        <tr>
+                            <td><%= index %></td>
+                            <td>
+                                <%= item.name %>
+                            </td>
+                            <td>
+                                <%= item.max_guests %>
+                            </td>
+                            <td>
+                                <%= item.bed_type %>
+                            </td>
+                            <td>
+                                <%= item.size_sqft %> sq ft
+                            </td>
+                            <td>
+                                <%= item.price %>
+                            </td>
+                            <td>
+                                <img src="<%= item.image_url %>" alt="room" style="width:60px;height:40px;object-fit:cover;" />
+                            </td>
+                            <td>
+                                <a href="/portal/room/<%= item.id %>/edit" class="btn btn-sm btn-primary">Edit</a>
+                                <form action="/portal/room/<%= item.id %>/delete" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% index++ %>
+                    <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+       </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <%- include('../partials/components/footer.ejs'); %>
+
+
+   <!-- code for gallery start  -->
+   <script src="/portal/assets/js/gallery.js"></script>
+   <script src="/portal/assets/js/dropzone.js"></script>
+   <!-- code for gallery end  -->
+
+<script src="/portal/assets/js/image_upload.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // ... (keep your existing code for tab switching)
+
+  const galleryInput = document.getElementById("gallery_images_input");
+  const galleryLabel = document.getElementById("gallery_images_label");
+  const deletedPhotosInput = document.getElementById("deleted_photos");
+  const photoOrderInput = document.getElementById("photo_order");
+  const deletedPhotoIds = new Set();
+
+  // ✅ DRAG AND DROP FUNCTIONALITY
+  let draggedElement = null;
+
+  const draggableImages = document.querySelectorAll('.draggable-image');
+  
+  draggableImages.forEach(img => {
+    img.addEventListener('dragstart', handleDragStart);
+    img.addEventListener('dragover', handleDragOver);
+    img.addEventListener('drop', handleDrop);
+    img.addEventListener('dragend', handleDragEnd);
+    img.addEventListener('dragenter', handleDragEnter);
+    img.addEventListener('dragleave', handleDragLeave);
+  });
+
+  function handleDragStart(e) {
+    draggedElement = this;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+  }
+
+  function handleDragOver(e) {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+  }
+
+  function handleDragEnter(e) {
+    if (this !== draggedElement) {
+      this.classList.add('drag-over');
+    }
+  }
+
+  function handleDragLeave(e) {
+    this.classList.remove('drag-over');
+  }
+
+  function handleDrop(e) {
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+
+    if (draggedElement !== this) {
+      // Get all draggable images
+      const container = document.getElementById('sortable_gallery');
+      const allImages = Array.from(container.querySelectorAll('.draggable-image'));
+      
+      // Get positions
+      const draggedIndex = allImages.indexOf(draggedElement);
+      const targetIndex = allImages.indexOf(this);
+      
+      // Reorder
+      if (draggedIndex < targetIndex) {
+        this.parentNode.insertBefore(draggedElement, this.nextSibling);
+      } else {
+        this.parentNode.insertBefore(draggedElement, this);
+      }
+      
+      // Update order input
+      updatePhotoOrder();
+    }
+
+    this.classList.remove('drag-over');
+    return false;
+  }
+
+  function handleDragEnd(e) {
+    this.classList.remove('dragging');
+    
+    // Remove drag-over class from all items
+    document.querySelectorAll('.draggable-image').forEach(item => {
+      item.classList.remove('drag-over');
+    });
+  }
+
+  function updatePhotoOrder() {
+    const container = document.getElementById('sortable_gallery');
+    const orderedImages = Array.from(container.querySelectorAll('.draggable-image'));
+    const photoOrder = orderedImages.map((img, index) => {
+      const photoId = img.getAttribute('data-photo-id');
+      return `${photoId}:${index}`;
+    }).join(',');
+    
+    photoOrderInput.value = photoOrder;
+    console.log('Updated photo order:', photoOrder);
+  }
+
+  // Initialize order on page load
+  updatePhotoOrder();
+
+  // Handle NEW image previews
+  galleryInput?.addEventListener("change", (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    const previewContainer = galleryLabel.parentElement;
+    const sortableGallery = document.getElementById('sortable_gallery');
+    
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imgDiv = document.createElement("div");
+        imgDiv.className = "image-container new-image";
+        imgDiv.innerHTML = `
+          <img src="${e.target.result}" alt="Preview" class="rounded-image" />
+          <button class="btn btn-danger remove-field remove-new-image" type="button">X</button>
+        `;
+        sortableGallery.appendChild(imgDiv);
+
+        // Add remove handler for new images
+        const removeBtn = imgDiv.querySelector(".remove-new-image");
+        removeBtn.addEventListener("click", () => {
+          imgDiv.remove();
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // Handle EXISTING image removal
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("remove-existing-image")) {
+      const photoId = e.target.getAttribute("data-photo-id");
+      if (photoId) {
+        deletedPhotoIds.add(photoId);
+        deletedPhotosInput.value = Array.from(deletedPhotoIds).join(",");
+        
+        const container = e.target.closest(".image-container");
+        container.remove();
+        
+        // Update order after deletion
+        updatePhotoOrder();
+        
+        console.log("Marked for deletion:", photoId);
+      }
+    }
+  });
+
+  // Thumbnail handling (keep your existing code)
+  const fileInput = document.getElementById("thumbnail_input");
+  const previewContainer = document.getElementById("thumbnail_preview");
+  const removeButtonId = "remove_thumbnail_btn";
+
+  if (fileInput) {
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewContainer.innerHTML = "";
+
+        const imgEl = document.createElement("img");
+        imgEl.src = e.target.result;
+        imgEl.className = "rounded-image";
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "btn btn-danger remove-field";
+        removeBtn.id = removeButtonId;
+        removeBtn.textContent = "X";
+
+        previewContainer.appendChild(imgEl);
+        previewContainer.appendChild(removeBtn);
+
+        removeBtn.addEventListener("click", () => {
+          fileInput.value = "";
+          previewContainer.innerHTML = "";
+        });
+      };
+
+      reader.readAsDataURL(file);
+    });
+  }
+});
+</script>
+</body>
+</html>

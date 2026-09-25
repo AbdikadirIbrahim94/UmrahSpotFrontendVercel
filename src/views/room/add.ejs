@@ -1,0 +1,369 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+
+<style>
+  .image-container {
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+  }
+  .rounded-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .remove-field {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    font-size: 12px;
+  }
+</style>
+
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Add Room</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/portal/room">Room</a></li>
+        <li class="breadcrumb-item active">Add Room</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Add Room</h5>
+
+            <!-- Hotel Add Form -->
+            <form action="/portal/room/create" method="POST" enctype="multipart/form-data">
+              <div class="row">
+                <div class="col-sm-8">
+                  <div class="form-floating mb-4">
+                    <input type="text" class="form-control border-gray" id="room_name_id" name="room_name_id" placeholder="Room Id (required)">
+                    <label for="room_name_id">Room Id (required)</label>
+                  </div>
+
+                  <div class="form-floating mb-4">
+                    <input type="text" class="form-control border-gray" id="name" name="name" placeholder="Name (required)">
+                    <label for="name">Name (required)</label>
+                  </div>
+
+                  <div class="form-floating mb-4">
+                    <select id="hotel_id" class="form-select border-gray" aria-label="Hotel" name="hotel_id">
+                      <option value="">Select Hotel</option>
+                      <% hotels.forEach((item)=>{ %>
+                        <option value="<%= item.id %>" <%=  hotelId && hotelId === item.id.toString() ? "selected" : "" %>><%= item.name %></option>
+                      <% }) %>
+                    </select>
+                    <label class="form-label" for="hotel">Select Hotel</label>
+                  </div>
+
+
+                  <!-- Thumbnail Upload -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label label-gray" for="thumbnail_input">Thumbnail</label>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                      <div>
+                        <label class="image-container-empty" for="thumbnail_input">
+                          <i class="bi bi-file-image"></i>
+                          <span>Add Image</span>
+                        </label>
+                        <input type="file" id="thumbnail_input" name="image" accept="image/*" style="display:none;" />
+                      </div>
+
+                      <div class="image-container" id="thumbnail_preview"></div>
+                    </div>
+                  </div>
+
+                  <!-- Gallery Upload -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label label-gray" for="gallery_images_input">Gallery Images</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start;" id="gallery_preview_container">
+                      <label class="image-container-empty" for="gallery_images_input" id="gallery_images_label">
+                        <i class="bi bi-images"></i>
+                        <span>Add Images</span>
+                      </label>
+                      <input 
+                        type="file" 
+                        id="gallery_images_input" 
+                        name="gallery_images" 
+                        multiple 
+                        accept="image/*" 
+                        style="display:none;"
+                      />
+                    </div>
+                    <input type="hidden" id="deleted_photos" name="deleted_photos" value="" />
+                  </div>
+
+                   <!-- Room Extras -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label">Room Extras</label>
+                    <div id="extras-container">
+                      <div class="extra-item mb-2">
+                        <input type="text" name="extras[0][name]" placeholder="Extra name" class="form-control d-inline-block w-50" />
+                        <input type="number" step="0.01" name="extras[0][price]" placeholder="Price" class="form-control d-inline-block w-25" />
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-secondary" id="add-extra-btn">+ Add Extra</button>
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <!-- Maximum Guest -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="maximum_guest">Maximum Guest</label>
+                    <input type="text" id="maximum_guest" class="form-control" name="maximum_guest" />
+                  </div>
+
+                 <div class="form-floating mb-4">
+                    <select id="room_type" class="form-select border-gray" aria-label="Hotel" name="room_type">
+                      <option value="">Select Room Type</option>
+                      <% roomType.forEach((item)=>{ %>
+                        <option value="<%= item.id %>" <%=  hotelId && hotelId === item.id.toString() ? "selected" : "" %>><%= item.name %></option>
+                      <% }) %>
+                    </select>
+                    <label class="form-label" for="hotel">Select Room Type</label>
+                  </div>
+
+                  <div class="form-floating mb-4">
+                      <select id="room_occupation" class="form-select border-gray" aria-label="Hotel" name="room_occupation">
+                        <option value="">Select Room Occupation</option>
+                          <option value="Double">Double</option>
+                          <option value="Triple">Triple</option>
+                          <option value="Quad">Quad</option>
+                      </select>
+                      <label class="form-label" for="hotel">Select Room Occupation</label>
+                    </div>
+
+                     <div class="form-floating mb-4">
+                      <select id="room_type" class="form-select border-gray" aria-label="Hotel" name="room_type">
+                       <% seasonType.forEach((item)=>{ %>
+                        <option value="<%= item.id %>"><%= item.name %></option>
+                      <% }) %>
+                      </select>
+                      <label class="form-label" for="hotel">Select Season</label>
+                    </div>
+
+                  <!-- Hotel Services -->
+                  <!-- <div class="form-outline mb-4">
+                    <label class="form-label" for="bed_type">Bed Type</label>
+                    <input type="text" id="bed_type" class="form-control" name="bed_type" />
+                  </div> -->
+
+                  <div class="mb-4 form-outline">
+                    <label class="form-label">View from Room</label>
+                    <div>
+                      <% viewOptions.forEach((option, index) => { %>
+                        <div class="form-check">
+                          <input 
+                            class="form-check-input" 
+                            type="checkbox" 
+                            id="view_<%= index %>" 
+                            name="view_from_room[]" 
+                            value="<%= option %>"
+                          >
+                          <label class="form-check-label" for="view_<%= index %>">
+                            <%= option %>
+                          </label>
+                        </div>
+                      <% }) %>
+                    </div>
+                  </div>
+
+                  <!-- Inner Amenities -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="area">Floor Area (sq ft)</label>
+                    <input type="text" id="area" class="form-control" name="area" />
+                  </div>
+
+                   <div class="form-floating mb-4">
+                    <textarea class="form-control border-gray" id="description" rows="4" name="description" style="height: 100px;"></textarea>
+                    <label class="form-label" for="description">Description</label>
+                  </div>
+
+                  <!-- Inner Amenities -->
+                  <!-- <div class="form-outline mb-4">
+                    <label class="form-label" for="price">Price per night</label>
+                    <input type="text" id="price" class="form-control" name="price" />
+                  </div>
+
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="free_cancellation_hours">Free cancelation Hours</label>
+                    <input type="text" id="free_cancellation_hours" class="form-control" name="free_cancellation_hours" />
+                  </div> -->
+
+                 
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block mb-4">Create Hotel</button>
+              <div id="spiner_loading"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main><!-- End #main -->
+
+<%- include('../partials/components/footer.ejs'); %>
+
+<!-- Gallery Scripts -->
+<script src="/portal/assets/js/gallery.js"></script>
+<script src="/portal/assets/js/dropzone.js"></script>
+<script src="/portal/assets/js/image_upload.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const galleryInput = document.getElementById("gallery_images_input");
+  const galleryLabel = document.getElementById("gallery_images_label");
+  const previewContainer = document.getElementById("gallery_preview_container");
+
+  // Store selected files in a DataTransfer object to maintain multiple files
+  let selectedFiles = new DataTransfer();
+
+  // Gallery preview with multiple file support
+  galleryInput?.addEventListener("change", (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    // Add new files to the existing selection
+    Array.from(files).forEach((file) => {
+      selectedFiles.items.add(file);
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imgDiv = document.createElement("div");
+        imgDiv.className = "image-container";
+        imgDiv.dataset.filename = file.name; // Store filename for removal
+        imgDiv.innerHTML = `
+          <img src="${e.target.result}" alt="Preview" class="rounded-image" />
+          <button class="btn btn-danger remove-field" type="button">X</button>
+        `;
+        previewContainer.appendChild(imgDiv);
+
+        imgDiv.querySelector("button").addEventListener("click", () => {
+          // Remove file from DataTransfer
+          const newFileList = new DataTransfer();
+          for (let i = 0; i < selectedFiles.files.length; i++) {
+            if (selectedFiles.files[i].name !== file.name) {
+              newFileList.items.add(selectedFiles.files[i]);
+            }
+          }
+          selectedFiles = newFileList;
+          galleryInput.files = selectedFiles.files;
+          
+          // Remove preview
+          imgDiv.remove();
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Update the input with all selected files
+    galleryInput.files = selectedFiles.files;
+    console.log(`Total gallery images selected: ${selectedFiles.files.length}`);
+  });
+
+  // Thumbnail preview
+  const fileInput = document.getElementById("thumbnail_input");
+  const thumbPreview = document.getElementById("thumbnail_preview");
+  if (fileInput) {
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        thumbPreview.innerHTML = `
+          <img src="${e.target.result}" alt="Thumbnail" class="rounded-image" />
+          <button class="btn btn-danger remove-field" type="button">X</button>
+        `;
+        thumbPreview.querySelector("button").addEventListener("click", () => {
+          fileInput.value = "";
+          thumbPreview.innerHTML = "";
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Add Extra functionality
+  let extraIndex = 1;
+  document.getElementById("add-extra-btn").addEventListener("click", () => {
+    const div = document.createElement("div");
+    div.classList.add("extra-item", "mb-2");
+    div.innerHTML = `
+      <input type="text" name="extras[${extraIndex}][name]" placeholder="Extra name" class="form-control d-inline-block w-50" />
+      <input type="number" step="0.01" name="extras[${extraIndex}][price]" placeholder="Price" class="form-control d-inline-block w-25" />
+      <button type="button" class="btn btn-sm btn-danger remove-extra-btn">×</button>
+    `;
+    
+    // Add remove functionality for the extra
+    div.querySelector(".remove-extra-btn").addEventListener("click", () => {
+      div.remove();
+    });
+    
+    document.getElementById("extras-container").appendChild(div);
+    extraIndex++;
+  });
+
+
+   const guestInput = document.getElementById("maximum_guest");
+  const occupationSelect = document.getElementById("room_occupation");
+
+  const occupationLimits = {
+    "Double": 2,
+    "Triple": 3,
+    "Quad": 4
+  };
+
+  // When user types guest count
+  guestInput.addEventListener("input", () => {
+    const guestCount = parseInt(guestInput.value);
+    console.log("guest count ;;;;;", guestCount)
+
+    if (!guestCount || guestCount < 1) return;
+
+    if (guestCount === 2) {
+      occupationSelect.value = "Double";
+    } 
+    else if (guestCount === 3) {
+      occupationSelect.value = "Triple";
+    } 
+    else if (guestCount === 4) {
+      occupationSelect.value = "Quad";
+    } 
+    else {
+      alert("Guests cannot be more than 4.");
+      guestInput.value = "";
+      occupationSelect.value = "";
+    }
+  });
+
+  // When user changes occupation manually
+  occupationSelect.addEventListener("change", () => {
+    const selectedOccupation = occupationSelect.value;
+    const maxAllowed = occupationLimits[selectedOccupation];
+
+    const guestCount = parseInt(guestInput.value);
+
+    if (guestCount && guestCount > maxAllowed) {
+      alert(`For ${selectedOccupation} room, maximum allowed guests are ${maxAllowed}.`);
+      guestInput.value = maxAllowed;
+    }
+  });
+
+});
+</script>
+</body>
+</html>

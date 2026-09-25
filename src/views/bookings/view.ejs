@@ -1,0 +1,297 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Booking Details</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/portal/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/portal/bookings">Bookings</a></li>
+        <li class="breadcrumb-item active"><%= booking.booking_number %></li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <!-- Booking Summary Card -->
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="card-title mb-0">Booking Information</h5>
+              <div>
+                <% if (booking.status === 'booked') { %>
+                  <span class="badge bg-success">Booked</span>
+                <% } else if (booking.status === 'cancelled') { %>
+                  <span class="badge bg-danger">Cancelled</span>
+                <% } else if (booking.status === 'completed') { %>
+                  <span class="badge bg-secondary">Completed</span>
+                <% } else { %>
+                  <span class="badge bg-warning"><%= booking.status %></span>
+                <% } %>
+                
+                <% if (booking.payment_status === 'paid') { %>
+                  <span class="badge bg-success ms-2">Paid</span>
+                <% } else if (booking.payment_status === 'pending') { %>
+                  <span class="badge bg-warning ms-2">Pending</span>
+                <% } else if (booking.payment_status === 'failed') { %>
+                  <span class="badge bg-danger ms-2">Failed</span>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <p class="mb-2"><strong>Booking Number:</strong> <span class="text-primary"><%= booking.booking_number %></span></p>
+                <p class="mb-2"><strong>Reservation Number:</strong> <%= booking.reservation_number %></p>
+                <p class="mb-2"><strong>Booking Date:</strong> <%= new Date(booking.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></p>
+              </div>
+              <div class="col-md-6">
+                <p class="mb-2"><strong>Check-In:</strong> <%= new Date(booking.check_in).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) %></p>
+                <p class="mb-2"><strong>Check-Out:</strong> <%= new Date(booking.check_out).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) %></p>
+                <p class="mb-2"><strong>Duration:</strong> <span class="badge bg-info"><%= booking.nights %> night<%= booking.nights !== 1 ? 's' : '' %></span></p>
+              </div>
+            </div>
+
+            <!-- Hotel Information -->
+            <% if (booking.hotel) { %>
+            <div class="alert alert-light border">
+              <h6 class="mb-2"><i class="bi bi-building"></i> Hotel Information</h6>
+              <p class="mb-1"><strong><%= booking.hotel.name %></strong></p>
+              <% if (booking.hotel.address) { %>
+                <p class="mb-0 text-muted small"><i class="bi bi-geo-alt"></i> <%= booking.hotel.address %></p>
+              <% } %>
+            </div>
+            <% } %>
+
+            <!-- Room Details -->
+            <h6 class="mt-4 mb-3">Room Details</h6>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th>Room Type</th>
+                    <th>Occupancy</th>
+                    <th>Quantity</th>
+                    <th>Base Price</th>
+                    <th>Extras</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% booking.bookingRooms.forEach(room => { %>
+                    <tr>
+                      <td>
+                        <strong><%= room.roomDetails ? room.roomDetails.name : 'Room #' + room.room_id %></strong>
+                        <% if (room.roomDetails && room.roomDetails.room_type) { %>
+                          <br><small class="text-muted"><%= room.roomDetails.room_type.name %></small>
+                        <% } %>
+                      </td>
+                      <td><%= room.roomOption ? room.roomOption.occupancy : '-' %></td>
+                      <td><span class="badge bg-secondary"><%= room.quantity %></span></td>
+                      <td><%= booking.currency %> <%= parseFloat(room.base_price).toFixed(2) %></td>
+                      <td>
+                        <% if (room.extras && room.extras.length > 0) { %>
+                          <ul class="list-unstyled mb-0 small">
+                            <% room.extras.forEach(extra => { %>
+                              <li><%= extra.name %>: <%= booking.currency %> <%= extra.price.toFixed(2) %></li>
+                            <% }) %>
+                          </ul>
+                        <% } else { %>
+                          <span class="text-muted">-</span>
+                        <% } %>
+                      </td>
+                      <td><strong><%= booking.currency %> <%= parseFloat(room.room_total).toFixed(2) %></strong></td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+                <tfoot class="table-light">
+                  <tr>
+                    <td colspan="5" class="text-end"><strong>Total:</strong></td>
+                    <td><strong><%= booking.currency %> <%= parseFloat(booking.total_price).toFixed(2) %></strong></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <!-- Cancellation Policy -->
+            <% if (booking.cancellation_policy) { %>
+            <div class="alert alert-info mt-3">
+              <h6 class="mb-2"><i class="bi bi-info-circle"></i> Cancellation Policy</h6>
+              <p class="mb-0 small"><%= booking.cancellation_policy %></p>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer & Actions Card -->
+      <div class="col-lg-4">
+        <!-- Customer Information -->
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-person"></i> Customer Information</h5>
+            
+            <% if (booking.customer) { %>
+              <div class="mb-3">
+                <p class="mb-2"><strong>Name:</strong><br><%= booking.customer.first_name %> <%= booking.customer.last_name %></p>
+                <p class="mb-2"><strong>Email:</strong><br><a href="mailto:<%= booking.customer.email %>"><%= booking.customer.email %></a></p>
+                <p class="mb-2"><strong>Phone:</strong><br><a href="tel:<%= booking.customer.phone_number %>"><%= booking.customer.phone_number %></a></p>
+                <p class="mb-2"><strong>Address:</strong><br>
+                  <%= booking.customer.address %><br>
+                  <%= booking.customer.city %>, <%= booking.customer.postal_code %><br>
+                  <%= booking.customer.country %>
+                </p>
+                
+                <% if (booking.customer.special_requests) { %>
+                  <div class="alert alert-warning py-2 px-3 mt-3">
+                    <strong>Special Requests:</strong>
+                    <p class="mb-0 mt-1 small"><%= booking.customer.special_requests %></p>
+                  </div>
+                <% } %>
+              </div>
+            <% } else if (booking.user) { %>
+              <div class="mb-3">
+                <p class="mb-2"><strong>User:</strong><br><%= booking.user.first_name %> <%= booking.user.last_name %></p>
+                <p class="mb-2"><strong>Email:</strong><br><a href="mailto:<%= booking.user.email %>"><%= booking.user.email %></a></p>
+              </div>
+            <% } else { %>
+              <p class="text-muted">No customer information available</p>
+            <% } %>
+
+            <% if (booking.total_guests) { %>
+              <p class="mb-0"><strong>Total Guests:</strong> <%= booking.total_guests %></p>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Payment Summary -->
+        <div class="card mt-3">
+          <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-credit-card"></i> Payment Summary</h5>
+            
+            <div class="d-flex justify-content-between mb-2">
+              <span>Subtotal:</span>
+              <span><%= booking.currency %> <%= booking.subtotal.toFixed(2) %></span>
+            </div>
+            
+            <% if (booking.extrasTotal > 0) { %>
+            <div class="d-flex justify-content-between mb-2">
+              <span>Extras:</span>
+              <span><%= booking.currency %> <%= booking.extrasTotal.toFixed(2) %></span>
+            </div>
+            <% } %>
+            
+            <hr>
+            <div class="d-flex justify-content-between mb-2">
+              <strong>Total Amount:</strong>
+              <strong class="text-primary"><%= booking.currency %> <%= parseFloat(booking.total_price).toFixed(2) %></strong>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+              <span>Payment Status:</span>
+              <% if (booking.payment_status === 'paid') { %>
+                <span class="badge bg-success">Paid</span>
+              <% } else if (booking.payment_status === 'pending') { %>
+                <span class="badge bg-warning">Pending</span>
+              <% } else if (booking.payment_status === 'failed') { %>
+                <span class="badge bg-danger">Failed</span>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="card mt-3">
+          <div class="card-body">
+            <h5 class="card-title">Actions</h5>
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Print Booking
+              </button>
+              
+              <% if (booking.status !== 'cancelled') { %>
+                <button class="btn btn-danger" onclick="cancelBooking(<%= booking.id %>, '<%= booking.booking_number %>')">
+                  <i class="bi bi-x-circle"></i> Cancel Booking
+                </button>
+              <% } %>
+              
+              <a href="/portal/bookings" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<%- include('../partials/components/footer.ejs'); %>
+
+<script>
+  function cancelBooking(bookingId, bookingNumber) {
+    Swal.fire({
+      title: 'Cancel Booking?',
+      text: `Are you sure you want to cancel booking ${bookingNumber}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, cancel it!',
+      cancelButtonText: 'No, keep it'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`/portal/booking/${bookingId}/cancel`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            Swal.fire({
+              title: 'Cancelled!',
+              text: 'The booking has been cancelled.',
+              icon: 'success'
+            }).then(() => {
+              location.reload();
+            });
+          } else {
+            Swal.fire('Error', data.message || 'Failed to cancel booking', 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire('Error', 'Failed to cancel booking', 'error');
+        });
+      }
+    });
+  }
+</script>
+
+<style>
+  @media print {
+    .sidebar, .header, .pagetitle nav, .card-title, button, .btn {
+      display: none !important;
+    }
+    .main {
+      margin-left: 0 !important;
+    }
+  }
+  
+  .alert {
+    font-size: 0.9rem;
+  }
+  
+  .table td, .table th {
+    vertical-align: middle;
+  }
+</style>
+</body>
+</html>

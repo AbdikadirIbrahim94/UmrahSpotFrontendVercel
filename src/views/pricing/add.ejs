@@ -1,0 +1,268 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Add Pricing</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/portal/season/add">Pricing</a></li>
+        <li class="breadcrumb-item active">Add Pricing</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Add Pricing</h5>
+
+            <form action="/portal/pricing/create" method="POST">
+                <div class="row">
+                    <div class="col-sm-8">
+
+                        <div class="form-floating mb-4">
+                            <select id="hotel_id" class="form-select border-gray" aria-label="Hotel" name="hotel_id">
+                            <option value="">Select Hotel</option>
+                            <% hotels.forEach((item)=>{ %>
+                                <option value="<%= item.name_id %>"><%= item.name_id %> (<%= item.name  %>)</option>
+                            <% }) %>
+                            </select>
+                            <label class="form-label" for="hotel">Select Hotel</label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <select id="room_id" class="form-select border-gray" aria-label="Hotel" name="room_id">
+                            <option value="">Select Rooms Option</option>
+                                <% rooms_option.forEach((item)=>{ %>
+                                <option value="<%= item.room_option_id %>">
+                                    <%= item.room_option_id %> (<%= item.room_type_name %> - <%= item.occupancy %>)
+                                </option>
+                                <% }) %>
+                            </select>
+                            <label class="form-label" for="hotel">Select Room Option</label>
+                        </div>
+
+                         <div class="form-floating mb-4">
+                            <select id="season_code_id" class="form-select border-gray" aria-label="Season" name="season_code_id">
+                            <option value="">Select Season</option>
+                                <% season_code.forEach((item)=>{ %>
+                                <option value="<%= item.season_code_id %>">
+                                    <%= item.season_code_id %>
+                                </option>
+                                <% }) %>
+                            </select>
+                            <label class="form-label" for="hotel">Select Season</label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <select id="day_type" class="form-select border-gray" aria-label="DayType" name="day_type">
+                                <option value="">Select Day Type</option>
+                                <option value="WEEKDAY">WEEKDAY</option>
+                                <option value="WEEKEND">WEEKEND</option>
+                            </select>
+                            <label class="form-label" for="hotel">Select Day Type</label>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                 <div class="form-floating mb-4">
+                                    <input 
+                                    type="text" 
+                                    id="cost_sar" 
+                                    name="cost_sar" 
+                                    class="form-control border-gray" 
+                                    placeholder="Cost Sar"
+                                    required
+                                    >
+                                    <label for="cost_sar">Cost SAR</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating mb-4">
+                                    <input 
+                                    type="text" 
+                                    id="hb_cost_sar" 
+                                    name="hb_cost_sar" 
+                                    class="form-control border-gray" 
+                                    placeholder="HB Cost Sar"
+                                    required
+                                    >
+                                    <label for="hb_cost_sar">HB Cost SAR</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating mb-4">
+                                    <input 
+                                    type="text" 
+                                    id="fb_cost_sar" 
+                                    name="fb_cost_sar" 
+                                    class="form-control border-gray" 
+                                    placeholder="FB Cost Sar"
+                                    required
+                                    >
+                                    <label for="fb_cost_sar">FB Cost SAR</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating mb-4">
+                                    <input 
+                                    type="text" 
+                                    id="bb_upgrade_sar" 
+                                    name="bb_upgrade_sar" 
+                                    class="form-control border-gray" 
+                                    placeholder="BB Upgrade Sar"
+                                    required
+                                    >
+                                    <label for="bb_upgrade_sar">BB Upgrade SAR</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating mb-4">
+                                    <input 
+                                    type="text" 
+                                    id="hb_upgrade_sar" 
+                                    name="hb_upgrade_sar" 
+                                    class="form-control border-gray" 
+                                    placeholder="HB Upgrade Sar"
+                                    required
+                                    >
+                                    <label for="hb_upgrade_sar">HB Upgrade SAR</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating mb-4">
+                                    <input 
+                                    type="text" 
+                                    id="fb_upgrade_sar" 
+                                    name="fb_upgrade_sar" 
+                                    class="form-control border-gray" 
+                                    placeholder="FB Upgrade Sar"
+                                    required
+                                    >
+                                    <label for="fb_upgrade_sar">FB Upgrade SAR</label>
+                                </div>
+                            </div>
+                        </div>
+                                    <!-- Season Code ID -->
+                       
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-outline mb-4">
+                            <label class="form-label">Start Date</label>
+                            <input 
+                            type="date" 
+                            name="start_date" 
+                            class="form-control" 
+                            required
+                            >
+                        </div>
+
+                        <!-- End Date -->
+                        <div class="form-outline mb-4">
+                            <label class="form-label">End Date</label>
+                            <input 
+                            type="date" 
+                            name="end_date" 
+                            class="form-control" 
+                            required
+                            >
+                        </div>
+
+                        <!-- Name -->
+                        <div class="form-floating mb-4">
+                            <input 
+                            type="text" 
+                            id="unique_key" 
+                            name="unique_key" 
+                            class="form-control border-gray" 
+                            placeholder="Unique Key"
+                            required
+                            >
+                            <label for="unique_key">Unique Key</label>
+                        </div>
+
+                    </div>
+                </div>
+              <button type="submit" class="btn btn-primary btn-block mb-4">
+                Create Room Price 
+              </button>
+              <div id="spiner_loading"></div>
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main><!-- End #main -->
+
+<%- include('../partials/components/footer.ejs'); %>
+<script>
+    $(document).ready(function() {
+        $('#hotel_id').on('change', function () {
+            const hotelId = $(this).val();
+            const roomSelect = $('#room_id');
+
+            roomSelect.empty();
+            roomSelect.append('<option value="">Select Room Option</option>');
+
+            if (!hotelId) return;
+
+            $.ajax({
+                url: `/portal/rooms/options/${hotelId}`,
+                method: "GET",
+                success: function (res) {
+                    if (res.success) {
+                        res.data.forEach(item => {
+                            roomSelect.append(`
+                                <option value="${item.room_option_id}">
+                                    ${item.room_option_id} (${item.room_type_name} - ${item.occupancy})
+                                </option>
+                            `);
+                        });
+                    }
+                },
+                error: function () {
+                    roomSelect.append('<option>Error loading rooms</option>');
+                }
+            });
+        });
+
+         $("#season_code_id").change(function() {
+
+            const seasonCode = $(this).val();
+            if (!seasonCode) return;
+
+            $.ajax({
+                url: "/portal/get-season-details",
+                type: "POST",
+                data: { season_code_id: seasonCode },
+                success: function(res) {
+                    if (res.success) {
+                        $("input[name='start_date']").val(res.data.start_date);
+                        $("input[name='end_date']").val(res.data.end_date);
+                    } else {
+                        console.log("Season not found");
+                    }
+                },
+                error: function(err) {
+                    console.error("Error:", err);
+                }
+            });
+
+        });
+    });
+   
+
+</script>
+</body>
+</html>

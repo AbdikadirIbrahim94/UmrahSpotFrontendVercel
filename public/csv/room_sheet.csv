@@ -1,0 +1,30 @@
+room_type_id,hotel_id,hotel_name,room_display_name,view,base_room_type,floor_area_sqm,has_haram_view,has_kaaba_view
+AJM_STD_CITY,AJM,Anjum Hotel Makkah,Standard City View Room,City,Standard,28,NO,NO
+AJM_DLX_HARAM,AJM,Anjum Hotel Makkah,Deluxe Haram View Room,Haram,Deluxe,28,YES,NO
+FMT_CITY,FMT,Makkah Clock Tower - A Fairmont Hotel,Fairmont Room City View,City,Fairmont Room,42,NO,NO
+FMT_HARAM,FMT,Makkah Clock Tower - A Fairmont Hotel,Fairmont Room Haram View,Haram,Fairmont Room,42,YES,NO
+FMT_KAABA,FMT,Makkah Clock Tower - A Fairmont Hotel,Fairmont Room Kaaba View,Kaaba,Fairmont Room,42,YES,YES
+FMT_JS_CITY,FMT,Makkah Clock Tower - A Fairmont Hotel,Junior Suite City View,City,Junior Suite,92,NO,NO
+FMT_JS_HARAM,FMT,Makkah Clock Tower - A Fairmont Hotel,Junior Suite Haram View,Haram,Junior Suite,95,YES,NO
+FMT_JS_KAABA,FMT,Makkah Clock Tower - A Fairmont Hotel,Junior Suite Kaaba View,Kaaba,Junior Suite,95,YES,YES
+FMT_GOLD_CITY,FMT,Makkah Clock Tower - A Fairmont Hotel,Fairmont Gold City,City,Fairmont Gold,92,NO,NO
+RAF_SIG_CITY,RAF,Raffles Palace Makkah,Signature Suite City,City,Signature Suite,80,NO,NO
+RAF_SIG_HARAM,RAF,Raffles Palace Makkah,Signature Suite Haram,Haram,Signature Suite,80,YES,NO
+RAF_DLX_KAABA,RAF,Raffles Palace Makkah,Deluxe Partial Kaaba,Kaaba,Deluxe Suite,90,YES,YES
+RAF_PRES_CITY,RAF,Raffles Palace Makkah,Presidential Suite City (2BR),City,Presidential Suite,150,NO,NO
+RAF_PRES_HARAM,RAF,Raffles Palace Makkah,Presidential Suite Haram (2BR),Haram,Presidential Suite,150,YES,NO
+RAF_ROYAL,RAF,Raffles Palace Makkah,Royal Suite,Haram,Royal Suite,300,YES,YES
+SWM_CITY,SWM,Swissotel Al Maqam,Classic Room City,City,Classic Room,32,NO,NO
+SWM_HARAM,SWM,Swissotel Al Maqam,Classic Room Haram,Haram,Classic Room,32,YES,NO
+SWM_PARTIAL_KAABA,SWM,Swissotel Al Maqam,Classic room Partial Kaaba,Kaaba,Classic Room,32,YES,YES
+SWM_KAABA_PREM,SWM,Swissotel Al Maqam,Classic Kaaba Premier,Kaaba,Classic Room,35,YES,YES
+SWM_JS_CITY,SWM,Swissotel Al Maqam,Junior suite City view,City,Junior Suite,50,NO,NO
+SWM_JS_HARAM,SWM,Swissotel Al Maqam,Junior suite Haram view,Haram,Junior Suite,50,YES,NO
+SWM_JS_KAABA,SWM,Swissotel Al Maqam,Junior suite Kaaba,Kaaba,Junior Suite,50,YES,YES
+SWK_CITY,SWK,Swissotel Makkah,Classic Room City,City,Classic Room,32,NO,NO
+SWK_HARAM,SWK,Swissotel Makkah,Classic Room Haram,Haram,Classic Room,32,YES,NO
+SWK_PARTIAL_KAABA,SWK,Swissotel Makkah,Classic room Partial Kaaba,Kaaba,Classic Room,32,YES,YES
+SWK_KAABA_PREM,SWK,Swissotel Makkah,Classic Kaaba Premier,Kaaba,Classic Room,35,YES,YES
+SWK_JS_CITY,SWK,Swissotel Makkah,Junior suite City view,City,Junior Suite,50,NO,NO
+SWK_JS_HARAM,SWK,Swissotel Makkah,Junior suite Haram view,Haram,Junior Suite,50,YES,NO
+SWK_JS_KAABA,SWK,Swissotel Makkah,Junior suite Kaaba,Kaaba,Junior Suite,50,YES,YES

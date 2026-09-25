@@ -1,0 +1,284 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Deals</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/portal/room/">Deal</a></li>
+                <li class="breadcrumb-item active">Edit Deal</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Edit Deal</h5>
+
+                    <form action="/portal/deal/update/<%= deal.deal_id %>" method="POST">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="form-floating mb-4">
+                                    <input type="text" class="form-control border-gray" id="deal_title" name="title" placeholder="Deal Title (required)" value="<%= deal.deal_title %>">
+                                    <label for="room_option_id">Deal Title (required)</label>
+                                </div>
+
+                                <div class="form-floating mb-4">
+                                    <select id="city_id" class="form-select border-gray" aria-label="City" name="city_id">
+                                    <option value="">Select City</option>
+                                    <% cities.forEach((item)=>{ %>
+                                        <option value="<%= item.id %>" 
+                                            <%= item.id === deal.hotel_city_id ? "selected" : "" %>
+                                            ><%= item.name %></option>
+                                    <% }) %>
+                                    </select>
+                                    <label class="form-label" for="city">Select Cities</label>
+                                </div>
+
+                                <div class="form-floating mb-4">
+                                    <select id="hotel_id" class="form-select border-gray" aria-label="Hotel" name="hotel_id">
+                                    <option value="">Select Hotel</option>
+                                    <% hotels.forEach((item)=>{ %>
+                                        <option value="<%= item.id %>" 
+                                            <%= item.id === deal.deal_hotel_id ? "selected" : "" %>>
+                                            <%= item.name %>
+                                        </option>
+                                    <% }) %>
+                                    </select>
+                                    <label class="form-label" for="hotel">Select Hotel</label>
+                                </div>
+
+                                <div class="form-floating mb-4">
+                                    <select id="room_id" class="form-select" name="room_id">
+                                        <option value="">Select Room</option>
+
+                                        <% rooms.forEach((item)=>{ %>
+                                            <option value="<%= item.id %>" 
+                                                <%= item.id === deal.deal_room_id ? "selected" : "" %>>
+                                                <%= item.name %>
+                                            </option>
+                                        <% }) %>
+                                    </select>
+
+                                    <label class="form-label" for="hotel">Select Rooms</label>
+                                </div>
+
+                                <div class="form-floating mb-4">
+                                    <select id="room_option_id" class="form-select" name="room_option_id">
+                                        <option value="">Select Room Option</option>
+
+                                        <% roomOptions.forEach((item)=>{ %>
+                                            <option value="<%= item.id %>"
+                                                <%= item.id === deal.deal_room_occupancy_id ? "selected" : "" %>>
+                                                <%= item.occupancy %>
+                                            </option>
+                                        <% }) %>
+                                    </select>
+
+                                    <label class="form-label" for="room_option_id">Select Rooms Option</label>
+                                </div>
+
+                                <div class="form-floating mb-4">
+                                    <textarea class="form-control border-gray" id="description" rows="4" name="description" style="height: 100px;"><%= deal.deal_description %></textarea>
+                                    <label class="form-label" for="description">Description</label>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label">Start Date</label>
+                                            <input 
+                                            type="date" 
+                                            name="start_date" 
+                                            class="form-control"
+                                            value="<%= deal.deal_start_date %>" 
+                                            required
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                         <!-- End Date -->
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label">End Date</label>
+                                            <input 
+                                            type="date" 
+                                            name="end_date" 
+                                            class="form-control" 
+                                            value="<%= deal.deal_end_date %>"
+                                            required
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="discount_value">Selling Price (Minimum)</label>
+                                    <input type="text" id="actual_price" class="form-control bg-light" name="actual_price"  
+                                    value="<%= deal.deal_actual_price %>"  readonly />
+                                </div>
+
+                                  <!-- Maximum Guest -->
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="discount_value">Deal Price</label>
+                                    <input type="text" id="deal_price" class="form-control" name="deal_price"  
+                                    value="<%= deal.deal_deal_price %>"  />
+                                </div>
+
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="rooms_left">Room Left</label>
+                                    <input type="text" id="rooms_left" class="form-control" name="rooms_left"  
+                                    value="<%= deal.deal_rooms_left %>"  />
+                                </div>
+
+                                <div class="form-floating mb-4">
+                                    <select id="meal_plan" class="form-select border-gray" aria-label="status" name="status">
+                                        <option value="">Select Status</option>
+                                        <option 
+                                        value="active" <%= deal.deal_status === "active" ? "selected" : "" %>>Active</option>
+                                        <option 
+                                        value="inactive" <%= deal.deal_status === "inactive" ? "selected" : "" %>>Inactive</option>
+                                        <option 
+                                        value="soldout" <%= deal.deal_status === "soldout" ? "selected" : "" %>>Sold Out</option>
+                                    </select>
+                                    <label class="form-label" for="status">Select Status</label>
+                                </div>
+
+                               
+                            
+                            </div>
+
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block mb-4">Update Deal</button>
+                        <div id="spiner_loading"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<%- include('../partials/components/footer.ejs'); %>
+<script>
+    $(document).ready(function() {
+        $('#city_id').on('change', function () {
+            const cityId = $(this).val();
+            const hotelSelect = $('#hotel_id');
+
+            hotelSelect.empty();
+            hotelSelect.append('<option value="">Select Hotel</option>');
+
+            if (!cityId) return;
+
+            $.ajax({
+                url: `/portal/hotel-data/${cityId}`,
+                method: "GET",
+                success: function (res) {
+                    if (res.success) {
+                        res.hotels.forEach(item => {
+                            hotelSelect.append(`
+                                <option value="${item.id}">
+                                    ${item.name} 
+                                </option>
+                            `);
+                        });
+                    }
+                },
+                error: function () {
+                    roomSelect.append('<option>Error loading hotels</option>');
+                }
+            });
+        });
+
+        $('#hotel_id').on('change', function () {
+            const hotelId = $(this).val();
+            const roomSelect = $('#room_id');
+
+            roomSelect.empty();
+            roomSelect.append('<option value="">Select Room</option>');
+
+            if (!hotelId) return;
+
+            $.ajax({
+                url: `/portal/rooms-data/${hotelId}`,
+                method: "GET",
+                success: function (res) {
+                    if (res.success) {
+                        res.rooms.forEach(item => {
+                            roomSelect.append(`
+                                <option value="${item.id}">
+                                    ${item.name} (${item.room_name_id})
+                                </option>
+                            `);
+                        });
+                    }
+                },
+                error: function () {
+                    roomSelect.append('<option>Error loading rooms</option>');
+                }
+            });
+        });
+
+        $('#room_id').on('change', function () {
+            const roomId = $(this).val();
+            const roomSelect = $('#room_option_id');
+
+            roomSelect.empty();
+            roomSelect.append('<option value="">Select Room Option</option>');
+
+            if (!roomId) return;
+
+            $.ajax({
+                url: `/portal/room-option-data/${roomId}`,
+                method: "GET",
+                success: function (res) {
+                    if (res.success) {
+                        res.roomOptions.forEach(item => {
+                            roomSelect.append(`
+                                <option value="${item.id}">
+                                    ${item.occupancy} (${item.room_option_id})
+                                </option>
+                            `);
+                        });
+                    }
+                },
+                error: function () {
+                    roomSelect.append('<option>Error loading rooms</option>');
+                }
+            });
+        });
+
+        $('#room_option_id').on('change', function () {
+            const roomoptionId = $(this).val();
+            const actual_price = $('#actual_price');
+
+            actual_price.empty();
+
+            if (!roomoptionId) return;
+
+            $.ajax({
+                url: `/portal/room-option-price/${roomoptionId}`,
+                method: "GET",
+                success: function (res) {
+                    if (res.success) {
+                       actual_price.val(res.room_price);
+                    }
+                },
+                error: function () {
+                    actual_price.val("Error loading price");
+                }
+            });
+        });
+    });
+     
+</script>
+</body>
+</html>

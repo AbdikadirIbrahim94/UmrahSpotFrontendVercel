@@ -1,0 +1,6 @@
+hotel_id,hotel_name,fee_buffer_rate,profit_margin_rate,total_markup_rate
+AJM,Anjum Hotel Makkah,0.05,0.08,1.13
+FMT,Makkah Clock Tower - A Fairmont Hotel,0.05,0.08,1.13
+RAF,Raffles Palace Makkah,0.05,0.08,1.13
+SWM,Swissotel Al Maqam,0.05,0.08,1.13
+SWK,Swissotel Makkah,0.05,0.08,1.13

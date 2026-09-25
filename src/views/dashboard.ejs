@@ -1,0 +1,161 @@
+<%-  include('./partials/components/header.ejs'); %>
+<!-- Daterangepicker CSS -->
+<%- include('./partials/components/top-bar.ejs'); %>
+<%- include('./partials/components/sidebar.ejs'); %>
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Dashboard Admin</h1>
+    </div><!-- End Page Title -->
+
+    <div class="card p-3 shadow-sm">
+      <div class="d-flex align-items-center">
+          
+          <div>
+              <h5 class="mb-1">Welcome, <strong>Admin</strong></h5>
+          </div>
+      </div>
+    </div>
+
+    <div class="row">
+      
+    </div>
+
+    <section class="section dashboard">
+      <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-12">
+          <div class="row">
+
+            <!-- Sales Card -->
+            <div class="col-xxl-2 col-md-6">
+              <div class="card info-card sales-card">
+
+                <a href="/portal/hotel">
+                  <div class="card-body">
+                    <h5 class="card-title">Hotels</span></h5>
+
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-building"></i>
+                      </div>
+
+                      <div class="ps-3">
+                        <h6><%= stats.totalHotels %></h6>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+
+              </div>
+            </div><!-- End Sales Card -->
+
+            <!-- Revenue Card -->
+            <div class="col-xxl-2 col-md-6">
+              <div class="card info-card customers-card">
+                <a href="/portal/room">
+                  <div class="card-body">
+                    <h5 class="card-title">Rooms</span></h5>
+
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-door-open"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6><%= stats.totalRooms %></h6>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+
+              </div>
+            </div><!-- End Revenue Card -->
+
+            <!-- Customers Card -->
+            <div class="col-xxl-2 col-xl-12">
+
+              <div class="card info-card revenue-card">
+                <a href="/portal/room/room-options">
+                  <div class="card-body">
+                    <h5 class="card-title">Room Option</span></h5>
+
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-people"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6><%= stats.totalRoomOccupancy %></h6>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </a>
+              </div>
+
+            </div><!-- End Customers Card -->
+
+             <div class="col-xxl-2 col-xl-12">
+
+              <div class="card info-card customers-card">
+                <a href="/portal/deal/list">
+                  <div class="card-body">
+                    <h5 class="card-title">Deals</span></h5>
+
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-tag"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6><%= stats.totaldeals %></h6>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </a>
+              </div>
+
+            </div><!-- End Customers Card -->
+
+              <div class="col-xxl-2 col-xl-12">
+
+              <div class="card info-card sales-card">
+                <a href="/portal/deal/list">
+                  <div class="card-body">
+                    <h5 class="card-title">Booking</span></h5>
+
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-calendar-check"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6><%= stats.totalbookings %></h6>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </a>
+              </div>
+
+            </div><!-- End Customers Card -->
+
+            
+
+          </div>
+        </div><!-- End Left side columns -->
+
+     
+
+      </div>
+    </section>
+  </main><!-- End #main -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <%- include('./partials/components/footer.ejs'); %>
+
+</body>
+</html>

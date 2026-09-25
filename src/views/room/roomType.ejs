@@ -1,0 +1,279 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+
+<style>
+  .image-container {
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+  }
+  .rounded-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .remove-field {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    font-size: 12px;
+  }
+  .btn-edit {
+    background: #3498db;
+    color: white;
+    border: none;
+  }
+  .btn-edit:hover {
+    background: #2980b9;
+    color: white;
+  }
+  .btn-delete {
+    background: #e74c3c;
+    color: white;
+    border: none;
+  }
+  .btn-delete:hover {
+    background: #c0392b;
+    color: white;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+  }
+  .empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+  }
+</style>
+
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Room Type Management</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/admin/dashboard">Home</a></li>
+        <li class="breadcrumb-item active">Room Types</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        
+        <!-- Success/Error Messages -->
+        <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle me-2"></i><%= success %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } %>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <i class="bi bi-exclamation-circle me-2"></i><%= error %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } %>
+
+        <!-- Add Room Type Card -->
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Add New Room Type</h5>
+            <form action="/portal/room/roomType/create" method="POST" class="row g-3">
+              <div class="col-md-9">
+                <div class="form-floating">
+                  <input 
+                    type="text" 
+                    class="form-control border-gray" 
+                    id="roomTypeName"
+                    name="name" 
+                    placeholder="Enter room type name"
+                    required
+                    maxlength="100"
+                  >
+                  <label for="roomTypeName">Room Type Name (e.g., Deluxe, Suite, Standard)</label>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100" style="height: 58px;">
+                  <i class="bi bi-plus-circle me-2"></i>Add Room Type
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Room Types Table -->
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              Existing Room Types
+              <span class="badge bg-primary ms-2"><%= typeof roomTypes !== 'undefined' ? roomTypes.length : 0 %></span>
+            </h5>
+
+            <% if (typeof roomTypes === 'undefined' || roomTypes.length === 0) { %>
+            <div class="empty-state">
+              <i class="bi bi-inbox"></i>
+              <h5>No Room Types Found</h5>
+              <p>Add your first room type using the form above</p>
+            </div>
+            <% } else { %>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Room Type Name</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Updated At</th>
+                    <th scope="col" class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% roomTypes.forEach((roomType, index) => { %>
+                  <tr>
+                    <th scope="row"><%= index + 1 %></th>
+                    <td><strong><%= roomType.name %></strong></td>
+                    <td><%= new Date(roomType.created_at).toLocaleDateString() %></td>
+                    <td><%= new Date(roomType.updated_at).toLocaleDateString() %></td>
+                    <td class="text-center">
+                      <button 
+                        class="btn btn-sm btn-edit me-2" 
+                        onclick="openEditModal(<%= roomType.id %>, '<%= roomType.name.replace(/'/g, "\\'") %>')"
+                        title="Edit"
+                      >
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                      <button 
+                        class="btn btn-sm btn-delete" 
+                        onclick="confirmDelete(<%= roomType.id %>, '<%= roomType.name.replace(/'/g, "\\'") %>')"
+                        title="Delete"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <% } %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main><!-- End #main -->
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-pencil me-2"></i>Edit Room Type
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="editForm" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="editName" class="form-label">Room Type Name</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="editName" 
+              name="name" 
+              required
+              maxlength="100"
+            >
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x me-2"></i>Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle me-2"></i>Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete the room type:</p>
+        <h5 class="text-center text-danger" id="deleteRoomTypeName"></h5>
+        <p class="text-muted mt-3">
+          <i class="bi bi-info-circle me-2"></i>
+          Note: You cannot delete a room type that is assigned to existing rooms.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x me-2"></i>Cancel
+        </button>
+        <form id="deleteForm" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash me-2"></i>Delete
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/components/footer.ejs'); %>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Edit Modal
+  window.openEditModal = function(id, name) {
+    document.getElementById('editName').value = name;
+    document.getElementById('editForm').action = `/portal/room/roomType/update/${id}`;
+    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    editModal.show();
+  };
+
+  // Delete Confirmation
+  window.confirmDelete = function(id, name) {
+    document.getElementById('deleteRoomTypeName').textContent = name;
+    document.getElementById('deleteForm').action = `/portal/room/roomType/delete/${id}`;
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+  };
+
+  // Auto-hide alerts after 5 seconds
+  setTimeout(() => {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+      bsAlert.close();
+    });
+  }, 5000);
+});
+</script>
+
+</body>
+</html>

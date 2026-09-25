@@ -1,0 +1,334 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+
+<style>
+  .rounded-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .remove-field {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    font-size: 12px;
+  }
+</style>
+
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Add Room Occupancy Option</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/portal/room/<%= occupancy.room_id %>/edit">Room Edit</a></li>
+        <li class="breadcrumb-item active">Add Room Occupancy Option</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Add Room Occupancy Option</h5>
+
+            <!-- Hotel Add Form -->
+            <form action="/portal/room/occupancy/update/<%= occupancy.id %>" method="POST" enctype="multipart/form-data">
+              <div class="row">
+                <div class="col-sm-8">
+                  <div class="form-floating mb-4">
+                    <input type="text" class="form-control border-gray" id="room_option_id" name="room_option_id" placeholder="Room Option Id (required)" value="<%= occupancy.room_option_id   %>">
+                    <label for="room_option_id">Room Option Id (required)</label>
+                  </div>
+
+                  <div class="form-floating mb-4">
+                    <select id="hotel_id" class="form-select border-gray" aria-label="Hotel" name="hotel_id">
+                      <option value="">Select Hotel</option>
+                      <% hotels.forEach((item)=>{ %>
+                        <option value="<%= item.id %>" <%=  occupancy.room.hotel_id && occupancy.room.hotel_id === item.id ? "selected" : "" %>><%= item.name %></option>
+                      <% }) %>
+                    </select>
+                    <label class="form-label" for="hotel">Select Hotel</label>
+                  </div>
+
+                   <div class="form-floating mb-4">
+                    <select id="room_id" class="form-select border-gray" aria-label="Hotel" name="room_id">
+                      <option value="">Select Rooms</option>
+                        <% rooms.forEach((item)=>{ %>
+                          <option value="<%= item.id %>" <%=  occupancy.room_id && occupancy.room_id === item.id ? "selected" : "" %>>
+                              <%= item.room_name_id %> (<%= item.room_type ? item.room_type.name : ""  %>)
+                          </option>
+                        <% }) %>
+                    </select>
+                    <label class="form-label" for="hotel">Select Rooms</label>
+                  </div>
+
+                <div class="form-floating mb-4">
+                    <textarea class="form-control border-gray" id="website_description" rows="4" name="website_description" style="height: 100px;"><%= occupancy.website_description  %></textarea>
+                    <label class="form-label" for="description">Description</label>
+                  </div>
+
+                    <!-- Thumbnail Upload -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label label-gray" for="thumbnail_input">Thumbnail</label>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                      <div>
+                        <label class="image-container-empty" for="thumbnail_input">
+                          <i class="bi bi-file-image"></i>
+                          <span>Change Image</span>
+                        </label>
+                        <input type="file" id="thumbnail_input" name="image" accept="image/*" style="display:none;" />
+                      </div>
+
+                      <!-- Preview area -->
+                      <% if (occupancy.image_url) { %>
+                      <div class="image-container" id="thumbnail_preview">
+                          <img src="<%= occupancy.image_url %>" alt="Room Thumbnail" class="rounded-image" loading="lazy" />
+                          <button class="btn btn-danger remove-field" type="button" id="remove_thumbnail_btn">X</button>
+                      </div>
+                      <% } else { %>
+                      <div class="image-container" id="thumbnail_preview"></div>
+                      <% } %>
+                    </div>
+                    <input type="hidden" id="remove_thumbnail" name="remove_thumbnail" value="0" />
+                  </div>
+
+                   <!-- Gallery Upload -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label label-gray" for="gallery_images_input">Gallery Images</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start;" id="gallery_preview_container">
+                      <label class="image-container-empty" for="gallery_images_input" id="gallery_images_label">
+                        <i class="bi bi-images"></i>
+                        <span>Add Images</span>
+                      </label>
+                      <input 
+                        type="file" 
+                        id="gallery_images_input" 
+                        name="gallery_images" 
+                        multiple 
+                        accept="image/*" 
+                        style="display:none;"
+                      />
+
+                      <% if (occupancy.photos && occupancy.photos.length > 0) { %>
+                          <% occupancy.photos.forEach((photo) => { %>
+                          <div class="image-container existing-image" data-photo-id="<%= photo.id %>">
+                              <img src="<%= photo.image_url %>" alt="Room Gallery Image" class="rounded-image" loading="lazy" />
+                              <button class="btn btn-danger remove-field remove-existing-image" type="button" data-photo-id="<%= photo.id %>">X</button>
+                          </div>
+                          <% }) %>
+                      <% } %>
+                    </div>
+                    <input type="hidden" id="deleted_photos" name="deleted_photos" value="" />
+                  </div>
+                </div>
+
+                  <div class="col-sm-4">
+                  <!-- Maximum Guest -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="maximum_guest">Maximum Guest</label>
+                    <input type="text" id="maximum_guest" class="form-control" name="maximum_guest" value="<%= occupancy.max_guests  %>" />
+                  </div>
+
+               
+
+                  <div class="form-floating mb-4">
+                      <select id="room_occupation" class="form-select border-gray" aria-label="Hotel" name="room_occupation">
+                        <option value="">Select Room Occupation</option>
+                          <option value="Double" <%=  occupancy.occupancy == "Double" ? "selected" : "" %>>Double</option>
+                          <option value="Triple" <%=  occupancy.occupancy == "Triple" ? "selected" : "" %>>Triple</option>
+                          <option value="Quad" <%=  occupancy.occupancy == "Quad" ? "selected" : "" %>>Quad</option>
+                      </select>
+                      <label class="form-label" for="hotel">Select Room Occupation</label>
+                    </div>
+
+                     <div class="form-floating mb-4">
+                      <select id="base_meal_plan" class="form-select border-gray" aria-label="meal_plan" name="base_meal_plan">
+                        <option value="">Select Base Meal Plan</option>
+                          <option value="BB" <%=  occupancy.base_meal_plan == "BB" ? "selected" : "" %>>BB</option>
+                          <option value="HB" <%=  occupancy.base_meal_plan == "HB" ? "selected" : "" %>>HB</option>
+                          <option value="FB" <%=  occupancy.base_meal_plan == "FB" ? "selected" : "" %>>FB</option>
+                      </select>
+                      <label class="form-label" for="meal_plan">Select Base Meal Plan</label>
+                    </div>
+
+                     <div class="form-outline mb-4">
+                    <label class="form-label" for="rooms_left">Room Left</label>
+                    <input type="text" id="rooms_left" class="form-control" name="rooms_left" value="<%= occupancy.rooms_left  %>" />
+                  </div>
+                 
+                </div>
+
+            </div>
+              <button type="submit" class="btn btn-primary btn-block mb-4">Update Occupancy</button>
+              <div id="spiner_loading"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main><!-- End #main -->
+
+<%- include('../partials/components/footer.ejs'); %>
+
+<!-- Gallery Scripts -->
+<script src="/portal/assets/js/gallery.js"></script>
+<script src="/portal/assets/js/dropzone.js"></script>
+<script src="/portal/assets/js/image_upload.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const guestInput = document.getElementById("maximum_guest");
+    const occupationSelect = document.getElementById("room_occupation");
+
+    const occupationLimits = {
+        "Double": 2,
+        "Triple": 3,
+        "Quad": 4
+    };
+
+    // When user types guest count
+    guestInput.addEventListener("input", () => {
+        const guestCount = parseInt(guestInput.value);
+        console.log("guest count ;;;;;", guestCount)
+
+        if (!guestCount || guestCount < 1) return;
+
+        if (guestCount === 2) {
+        occupationSelect.value = "Double";
+        } 
+        else if (guestCount === 3) {
+        occupationSelect.value = "Triple";
+        } 
+        else if (guestCount === 4) {
+        occupationSelect.value = "Quad";
+        } 
+        else {
+        alert("Guests cannot be more than 4.");
+        guestInput.value = "";
+        occupationSelect.value = "";
+        }
+    });
+
+    // When user changes occupation manually
+    occupationSelect.addEventListener("change", () => {
+        const selectedOccupation = occupationSelect.value;
+        const maxAllowed = occupationLimits[selectedOccupation];
+
+        const guestCount = parseInt(guestInput.value);
+
+        if (guestCount && guestCount > maxAllowed) {
+        alert(`For ${selectedOccupation} room, maximum allowed guests are ${maxAllowed}.`);
+        guestInput.value = maxAllowed;
+        }
+    });
+
+ const galleryInput = document.getElementById("gallery_images_input");
+  const previewContainer = document.getElementById("gallery_preview_container");
+  const deletedPhotosInput = document.getElementById("deleted_photos");
+  const deletedExtrasInput = document.getElementById("deleted_extras");
+  let deletedPhotos = [];
+  let deletedExtras = [];
+
+  // Store selected files in a DataTransfer object
+  let selectedFiles = new DataTransfer();
+
+  // Handle existing gallery image removal
+  document.querySelectorAll(".remove-existing-image").forEach(btn => {
+    btn.addEventListener("click", function() {
+      const photoId = this.dataset.photoId;
+      deletedPhotos.push(photoId);
+      deletedPhotosInput.value = deletedPhotos.join(",");
+      this.closest(".image-container").remove();
+      console.log("Marked photo for deletion:", photoId);
+    });
+  });
+
+  // Handle thumbnail removal
+  const removeThumbnailBtn = document.getElementById("remove_thumbnail_btn");
+  const removeThumbnailInput = document.getElementById("remove_thumbnail");
+  const thumbnailPreview = document.getElementById("thumbnail_preview");
+  
+  if (removeThumbnailBtn) {
+    removeThumbnailBtn.addEventListener("click", () => {
+      removeThumbnailInput.value = "1";
+      thumbnailPreview.innerHTML = "";
+      console.log("Marked thumbnail for deletion");
+    });
+  }
+
+  // Gallery preview with multiple file support
+  galleryInput?.addEventListener("change", (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    Array.from(files).forEach((file) => {
+      selectedFiles.items.add(file);
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imgDiv = document.createElement("div");
+        imgDiv.className = "image-container new-image";
+        imgDiv.dataset.filename = file.name;
+        imgDiv.innerHTML = `
+          <img src="${e.target.result}" alt="Preview" class="rounded-image" />
+          <button class="btn btn-danger remove-field" type="button">X</button>
+        `;
+        previewContainer.appendChild(imgDiv);
+
+        imgDiv.querySelector("button").addEventListener("click", () => {
+          const newFileList = new DataTransfer();
+          for (let i = 0; i < selectedFiles.files.length; i++) {
+            if (selectedFiles.files[i].name !== file.name) {
+              newFileList.items.add(selectedFiles.files[i]);
+            }
+          }
+          selectedFiles = newFileList;
+          galleryInput.files = selectedFiles.files;
+          imgDiv.remove();
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    galleryInput.files = selectedFiles.files;
+    console.log(`Total new gallery images: ${selectedFiles.files.length}`);
+  });
+
+    // Thumbnail preview
+  const fileInput = document.getElementById("thumbnail_input");
+  if (fileInput) {
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      // Reset the remove flag when new image is selected
+      removeThumbnailInput.value = "0";
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        thumbnailPreview.innerHTML = `
+          <img src="${e.target.result}" alt="Thumbnail" class="rounded-image" />
+          <button class="btn btn-danger remove-field" type="button">X</button>
+        `;
+        thumbnailPreview.querySelector("button").addEventListener("click", () => {
+          fileInput.value = "";
+          thumbnailPreview.innerHTML = "";
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+});
+</script>
+</body>
+</html>

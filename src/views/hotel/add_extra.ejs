@@ -1,0 +1,79 @@
+<%- include('../partials/components/header.ejs'); %>
+<style>
+    .form-option{
+        font-weight: 500;
+        color: #94A3B8 !important;
+        font-size: 14px;
+    }
+</style>
+<%- include('../partials/components/top-bar.ejs'); %>
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Hotel Extra</h1>
+        <nav>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/portal/hotel-extra">Hotel Extra</a></li>
+            <li class="breadcrumb-item"><a class="active" href="/portal/hotel-extra/add">Add Hotel Extra</a></li>
+          </ol>
+        </nav>
+      </div>
+
+      <section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                        <div class="col-sm-6">
+                            <h5 class="card-title">Add Hotel Extra</h5>
+                            <form method="POST" action="/portal/hotel-extra/add">
+                                <div class="form-floating mb-4">
+                                    <input type="text" id="name" class="form-control border-gray" name="name" placeholder="name (required)"  />
+                                    <label  for="name">Hotel Extra Name</label>
+                                </div>
+
+                                 <div class="form-floating mb-4">
+                                    <textarea class="form-control border-gray" id="thumbnail" rows="4" name="thumbnail"  style="height: 400px;"></textarea>
+                                    <label  for="thumbnail">Hotel Extra Thumbnail</label>
+                                </div>
+                               
+                                <div class="form-floating mb-4">
+                                    <select id="all_type" class="form-select border-gray" aria-label="Type" name="type">
+                                        <option value="0" class="form-option">Select Type</option>
+                                    <% typeList.forEach(function (item){ %> 
+                                        <option value="<%= item %>"><%= item %></option>
+                                    <% }) %>
+                                    </select>
+                                    <label  for="name">Types</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-block mb-4">Send</button>
+
+                                <div class="loader-container" id="loader-container" style="display: none;">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading....
+                                </div>
+
+                            </form>
+                        </div>
+                        </div>
+                        </div>
+
+        </div>
+    </section>
+
+</main>
+
+
+<%- include('../partials/components/footer.ejs'); %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function(){
+       
+          
+      
+    });
+</script>
+
+</body>
+</html>

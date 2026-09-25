@@ -1,0 +1,199 @@
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright <strong><span>UmrahSpot</span></strong>. All Rights Reserved
+    </div>
+    <div class="credits">
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+ <!-- Vendor JS Files -->
+ <!-- <script src="assets/vendor/apexcharts/apexcharts.min.js"></script> -->
+ <script src="/portal/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+ <script src="/portal/assets/vendor/chart.js/chart.umd.js"></script>
+ <script src="/portal/assets/vendor/echarts/echarts.min.js"></script>
+
+ <script src="/portal/assets/vendor/quill/quill.min.js"></script>
+ <script src="/portal/assets/vendor/simple-datatables/simple-datatables.js"></script>
+ <script src="/portal/assets/vendor/tinymce/tinymce.min.js"></script>
+ <script src="/portal/assets/vendor/php-email-form/validate.js"></script>
+ <script src="/portal/assets/js/main.js"></script>
+ <script src="/portal/assets/js/jquery.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+ <!-- <script src="/portal/assets/vendor/simple-datatables/simple-datatables.js"></script> -->
+ <script src="/portal/assets/js/datatable.js"></script>
+ <script src="/portal/assets/js/dataTable-colomn.js"></script>
+
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+ <script>
+    $("#language_value").on("change", function(){
+        let lang_val = $(this).val();
+        localStorage.setItem('current_lang', lang_val);
+
+        var cookieName = 'current_lang';
+        var cookieValue = lang_val;
+        var daysToExpire = 7;
+        const date = new Date();
+        date.setTime(date.getTime() + (daysToExpire * 24 * 60 * 60 * 1000)); // Calculate expiration time
+        const expires = `expires=${date.toUTCString()}`;
+        document.cookie = `${cookieName}=${cookieValue}; ${expires}; path=/`; // Set the cookie
+
+        location.reload();
+
+    })
+
+    $(document).ready(function(){
+      new DataTable('#cities_table', {
+        "scrollX": false, // Enable horizontal scrolling
+        "autoWidth": false,
+        "pageLength": 10, 
+        "language": {
+            "search": "", // Your placeholder text
+            "info": "_START_-_END_ of _TOTAL_ items", 
+        },
+        "dom": '<"top"f><"second-row"l<"total-info">i<"pagination">p>rt',
+        "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+        "pagingType": "full_numbers",
+      });
+    });
+
+    $(document).ready(function(){
+      new DataTable('#hotel_table', {
+          columnDefs: [
+            { "width": "40px", "targets": 0 },  // Checkbox column
+            { "width": "100px", "targets": 1 }, // Image column
+            { "width": "100px", "targets": 2 }, // Category column
+            { "width": "100px", "targets": 2 }, // Category column
+            { "width": "100px", "targets": 2 }, // Category column
+            { "width": "100px", "targets": 2 }, // Category column
+        ],
+        "scrollX": true, // Enable horizontal scrolling
+        "autoWidth": false,
+        "pageLength": 10, 
+        "language": {
+            "search": "", // Your placeholder text
+            "info": "_START_-_END_ of _TOTAL_ items", 
+        },
+        "dom": '<"top"f><"second-row"l<"total-info">i<"pagination">p>rt',
+        "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+        "pagingType": "full_numbers",
+      });
+
+    
+
+      $('#taxonomy_table_filter input').attr('placeholder', 'Search...');
+      $('#translation_filter input').attr('placeholder', 'Search...');
+      $('#string_translation_filter input').attr('placeholder', 'Search...');
+
+  });
+
+   $(document).ready(function(){
+      new DataTable('.hotel_table_extra', {
+          columnDefs: [
+            // { "width": "40px", "targets": 0 },  // Checkbox column
+            // { "width": "100px", "targets": 1 }, // Image column
+            // { "width": "100px", "targets": 2 }, // Category column
+        ],
+        "scrollX": false, // Enable horizontal scrolling
+        "autoWidth": false,
+        "pageLength": 10, 
+        "language": {
+            "search": "", // Your placeholder text
+            "info": "_START_-_END_ of _TOTAL_ items", 
+        },
+        "dom": '<"top"f><"second-row"l<"total-info">i<"pagination">p>rt',
+        "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+        "pagingType": "full_numbers",
+      });
+
+      new DataTable('#room_table', {
+        
+        "scrollX": false, // Enable horizontal scrolling
+        "autoWidth": false,
+        "pageLength": 10, 
+        "language": {
+            "search": "", // Your placeholder text
+            "info": "_START_-_END_ of _TOTAL_ items", 
+        },
+        "dom": '<"top"f><"second-row"l<"total-info">i<"pagination">p>rt',
+        "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+        "pagingType": "full_numbers",
+      });
+
+       new DataTable('#room_option_table', {
+        "scrollX": true, // Enable horizontal scrolling
+        "autoWidth": false,
+        "pageLength": 10, 
+        "language": {
+            "search": "", // Your placeholder text
+            "info": "_START_-_END_ of _TOTAL_ items", 
+        },
+        "dom": '<"top"f><"second-row"l<"total-info">i<"pagination">p>rt',
+        "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+        "pagingType": "full_numbers",
+      });
+
+      const table = new DataTable('#pricing_table', {
+          "scrollX": false,
+          "autoWidth": false,
+          "pageLength": 10,
+          "language": {
+            "search": "",
+            "info": "_START_-_END_ of _TOTAL_ items",
+          },
+          "dom": '<"top"Bf><"second-row"l<"total-info">i<"pagination">p>rt',
+          "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+          "pagingType": "full_numbers",
+          "buttons": [
+            {
+              extend: 'csv',
+              text: '<i class="bi bi-file-earmark-spreadsheet"></i> Export CSV',
+              className: 'btn btn-success btn-sm',
+              filename: 'pricing-data-' + new Date().toISOString().split('T')[0],
+              exportOptions: {
+                columns: ':not(:last-child)' // Exclude the last column (Action column)
+              }
+            },
+            {
+              extend: 'excel',
+              text: '<i class="bi bi-file-earmark-excel"></i> Export Excel',
+              className: 'btn btn-success btn-sm',
+              filename: 'pricing-data-' + new Date().toISOString().split('T')[0],
+              exportOptions: {
+                columns: ':not(:last-child)'
+              }
+            },
+            {
+              extend: 'pdf',
+              text: '<i class="bi bi-file-earmark-pdf"></i> Export PDF',
+              className: 'btn btn-danger btn-sm',
+              filename: 'pricing-data-' + new Date().toISOString().split('T')[0],
+              orientation: 'landscape',
+              exportOptions: {
+                columns: ':not(:last-child)'
+              }
+            }
+          ]
+        });
+
+      table.buttons().container().appendTo('#exportButtons');
+
+      $('#taxonomy_table_filter input').attr('placeholder', 'Search...');
+      $('#translation_filter input').attr('placeholder', 'Search...');
+      $('#string_translation_filter input').attr('placeholder', 'Search...');
+
+  });
+</script>
+
+
+
+
+

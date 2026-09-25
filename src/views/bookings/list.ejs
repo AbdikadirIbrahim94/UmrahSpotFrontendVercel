@@ -1,0 +1,288 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Bookings Management</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/portal/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active">Bookings</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title">All Bookings</h5>
+              <div class="card-title">
+                <span class="badge bg-primary">Total: <%= bookings.length %></span>
+              </div>
+            </div>
+
+            <table class="table datatable" id="booking_table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Booking Number</th>
+                  <th scope="col">Customer</th>
+                  <th scope="col">Hotel</th>
+                  <th scope="col">Rooms</th>
+                  <th scope="col">Check-In</th>
+                  <th scope="col">Check-Out</th>
+                  <th scope="col">Nights</th>
+                  <th scope="col">Guests</th>
+                  <th scope="col">Total Price</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Payment</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (bookings.length > 0) { %>
+                  <% bookings.forEach((b, i) => { %>
+                    <tr>
+                      <td><%= i + 1 %></td>
+                      
+                      <!-- Booking Number -->
+                      <td>
+                        <strong><%= b.booking_number %></strong><br>
+                        <small class="text-muted"><%= b.reservation_number %></small>
+                      </td>
+                      
+                      <!-- Customer -->
+                      <td>
+                        <% if (b.customer) { %>
+                          <strong><%= b.customer.first_name %> <%= b.customer.last_name %></strong><br>
+                          <small class="text-muted"><%= b.customer.email %></small><br>
+                          <small class="text-muted"><%= b.customer.phone_number %></small>
+                        <% } else if (b.user) { %>
+                          <strong><%= b.user.first_name %> <%= b.user.last_name %></strong><br>
+                          <small class="text-muted"><%= b.user.email %></small>
+                        <% } else { %>
+                          <span class="text-muted">N/A</span>
+                        <% } %>
+                      </td>
+                      
+                      <!-- Hotel -->
+                      <td>
+                        <% if (b.hotel) { %>
+                          <%= b.hotel.name %>
+                        <% } else { %>
+                          <span class="text-muted">N/A</span>
+                        <% } %>
+                      </td>
+                      
+                      <!-- Rooms -->
+                      <td>
+                        <% if (b.bookingRooms && b.bookingRooms.length > 0) { %>
+                          <% b.bookingRooms.forEach(br => { %>
+                            <div class="mb-1">
+                              <!-- <%= br.roomDetails ? br.roomDetails.name : 'Room #' + br.room_id %> -->
+                              <%= br.roomOption ? br.roomOption.occupancy : 'Room #' + br.room_id %> <%= br.roomDetails ? br.roomDetails.name : 'Room #' + br.room_id %> 
+                              <span class="badge bg-secondary">x<%= br.quantity %></span>
+                            </div>
+                          <% }) %>
+                        <% } else { %>
+                          <span class="text-muted">N/A</span>
+                        <% } %>
+                      </td>
+                      
+                      <!-- Check-In -->
+                      <td>
+                        <%= new Date(b.check_in).toLocaleDateString('en-US', { 
+                          month: 'short', 
+                          day: 'numeric', 
+                          year: 'numeric' 
+                        }) %>
+                      </td>
+                      
+                      <!-- Check-Out -->
+                      <td>
+                        <%= new Date(b.check_out).toLocaleDateString('en-US', { 
+                          month: 'short', 
+                          day: 'numeric', 
+                          year: 'numeric' 
+                        }) %>
+                      </td>
+                      
+                      <!-- Nights -->
+                      <td>
+                        <span class="badge bg-info"><%= b.nights %> night<%= b.nights !== 1 ? 's' : '' %></span>
+                      </td>
+                      
+                      <!-- Guests -->
+                      <td><%= b.total_guests || "-" %></td>
+                      
+                      <!-- Total Price -->
+                      <td>
+                        <strong><%= b.currency %> <%= parseFloat(b.total_price).toFixed(2) %></strong>
+                      </td>
+                      
+                      <!-- Booking Status -->
+                      <td>
+                        <% if (b.status === 'booked') { %>
+                          <span class="badge bg-success">Booked</span>
+                        <% } else if (b.status === 'cancelled') { %>
+                          <span class="badge bg-danger">Cancelled</span>
+                        <% } else if (b.status === 'completed') { %>
+                          <span class="badge bg-secondary">Completed</span>
+                        <% } else { %>
+                          <span class="badge bg-warning"><%= b.status %></span>
+                        <% } %>
+                      </td>
+                      
+                      <!-- Payment Status -->
+                      <td>
+                        <% if (b.payment_status === 'paid') { %>
+                          <span class="badge bg-success">Paid</span>
+                        <% } else if (b.payment_status === 'pending') { %>
+                          <span class="badge bg-warning">Pending</span>
+                        <% } else if (b.payment_status === 'failed') { %>
+                          <span class="badge bg-danger">Failed</span>
+                        <% } else { %>
+                          <span class="badge bg-secondary"><%= b.payment_status %></span>
+                        <% } %>
+                      </td>
+                      
+                      <!-- Actions -->
+                      <td>
+                        <div class="btn-group" role="group">
+                          <button type="button" 
+                                  class="btn btn-sm btn-info" 
+                                  onclick="viewBooking(<%= b.id %>)"
+                                  title="View Details">
+                            <i class="bi bi-eye"></i>
+                          </button>
+                          <% if (b.status !== 'cancelled') { %>
+                            <button type="button" 
+                                    class="btn btn-sm btn-danger" 
+                                    onclick="cancelBooking(<%= b.id %>, '<%= b.booking_number %>')"
+                                    title="Cancel Booking">
+                              <i class="bi bi-x-circle"></i>
+                            </button>
+                          <% } %>
+                        </div>
+                      </td>
+                    </tr>
+                  <% }) %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="13" class="text-center py-4">
+                      <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                      <p class="text-muted mt-2">No bookings found.</p>
+                    </td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Booking Details Modal -->
+<div class="modal fade" id="bookingDetailsModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Booking Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="bookingDetailsContent">
+        <!-- Content will be loaded dynamically -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<%- include('../partials/components/footer.ejs'); %>
+
+<script>
+  // View booking details
+  function viewBooking(bookingId) {
+    window.location.href = `/portal/booking/${bookingId}`;
+  }
+
+  // Cancel booking
+  function cancelBooking(bookingId, bookingNumber) {
+    Swal.fire({
+      title: 'Cancel Booking?',
+      text: `Are you sure you want to cancel booking ${bookingNumber}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, cancel it!',
+      cancelButtonText: 'No, keep it'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Make API call to cancel booking
+        fetch(`/portal/booking/${bookingId}/cancel`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            Swal.fire({
+              title: 'Cancelled!',
+              text: 'The booking has been cancelled.',
+              icon: 'success'
+            }).then(() => {
+              location.reload();
+            });
+          } else {
+            Swal.fire('Error', data.message || 'Failed to cancel booking', 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire('Error', 'Failed to cancel booking', 'error');
+        });
+      }
+    });
+  }
+
+  // Initialize DataTable with options
+  document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('booking_table')) {
+      new simpleDatatables.DataTable("#booking_table", {
+        searchable: true,
+        fixedHeight: false,
+        perPage: 10,
+        labels: {
+          placeholder: "Search bookings...",
+          noRows: "No bookings found",
+          info: "Showing {start} to {end} of {rows} bookings"
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  .btn-group .btn {
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .table td {
+    vertical-align: middle;
+  }
+  
+  .badge {
+    font-size: 0.75rem;
+  }
+</style>
+</body>
+</html>

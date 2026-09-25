@@ -1,0 +1,81 @@
+room_option_id,room_type_id,hotel_id,hotel_name,display_occupancy_label,display_guest_count,website_description,base_meal_plan_included
+AJM_STD_CITY_2P,AJM_STD_CITY,AJM,Anjum Hotel Makkah,Double,2,Standard City View Double  (2 single beds or one King),BB
+AJM_STD_CITY_3P,AJM_STD_CITY,AJM,Anjum Hotel Makkah,Triple,3,Standard City View Double + 1 extra bed (smaller),BB
+AJM_STD_CITY_4P,AJM_STD_CITY,AJM,Anjum Hotel Makkah,Quad,4,Standard City View Double + 2 extra beds (smaller),BB
+AJM_DLX_HARAM_2P,AJM_DLX_HARAM,AJM,Anjum Hotel Makkah,Double,2,2 single beds (convertible to double),BB
+AJM_DLX_HARAM_3P,AJM_DLX_HARAM,AJM,Anjum Hotel Makkah,Triple,3,Deluxe Haram View Double + 1 extra bed (smaller),BB
+AJM_DLX_HARAM_4P,AJM_DLX_HARAM,AJM,Anjum Hotel Makkah,Quad,4,Deluxe Haram View Double + 2 extra beds (smaller),BB
+FMT_CITY_2P,FMT_CITY,FMT,Makkah Clock Tower - A Fairmont Hotel,Double,2,Fairmont Room City View Double (2 guests),BB
+FMT_CITY_3P,FMT_CITY,FMT,Makkah Clock Tower - A Fairmont Hotel,Triple,3,Fairmont Room City View Triple (3 guests),BB
+FMT_CITY_4P,FMT_CITY,FMT,Makkah Clock Tower - A Fairmont Hotel,Quad,4,Fairmont Room City View Quad (4 guests),BB
+FMT_HARAM_2P,FMT_HARAM,FMT,Makkah Clock Tower - A Fairmont Hotel,Double,2,Fairmont Room Haram View Double (2 guests),BB
+FMT_HARAM_3P,FMT_HARAM,FMT,Makkah Clock Tower - A Fairmont Hotel,Triple,3,Fairmont Room Haram View Triple (3 guests),BB
+FMT_HARAM_4P,FMT_HARAM,FMT,Makkah Clock Tower - A Fairmont Hotel,Quad,4,Fairmont Room Haram View Quad (4 guests),BB
+FMT_KAABA_2P,FMT_KAABA,FMT,Makkah Clock Tower - A Fairmont Hotel,Double,2,Fairmont Room Kaaba View Double (2 guests),BB
+FMT_KAABA_3P,FMT_KAABA,FMT,Makkah Clock Tower - A Fairmont Hotel,Triple,3,Fairmont Room Kaaba View Triple (3 guests),BB
+FMT_JS_CITY_2P,FMT_JS_CITY,FMT,Makkah Clock Tower - A Fairmont Hotel,Double,2,Junior Suite City View Double (2 guests),BB
+FMT_JS_CITY_3P,FMT_JS_CITY,FMT,Makkah Clock Tower - A Fairmont Hotel,Triple,3,Junior Suite City View Triple (3 guests),BB
+FMT_JS_CITY_4P,FMT_JS_CITY,FMT,Makkah Clock Tower - A Fairmont Hotel,Quad,4,Junior Suite City View Quad (4 guests),BB
+FMT_JS_HARAM_2P,FMT_JS_HARAM,FMT,Makkah Clock Tower - A Fairmont Hotel,Double,2,Junior Suite Haram View Double (2 guests),BB
+FMT_JS_HARAM_3P,FMT_JS_HARAM,FMT,Makkah Clock Tower - A Fairmont Hotel,Triple,3,Junior Suite Haram View Triple (3 guests),BB
+FMT_JS_HARAM_4P,FMT_JS_HARAM,FMT,Makkah Clock Tower - A Fairmont Hotel,Quad,4,Junior Suite Haram View Quad (4 guests),BB
+FMT_JS_KAABA_2P,FMT_JS_KAABA,FMT,Makkah Clock Tower - A Fairmont Hotel,Double,2,Junior Suite Kaaba View Double (2 guests),BB
+FMT_JS_KAABA_3P,FMT_JS_KAABA,FMT,Makkah Clock Tower - A Fairmont Hotel,Triple,3,Junior Suite Kaaba View Triple (3 guests),BB
+FMT_JS_KAABA_4P,FMT_JS_KAABA,FMT,Makkah Clock Tower - A Fairmont Hotel,Quad,4,Junior Suite Kaaba View Triple (4 guests),BB
+FMT_GOLD_CITY_2P,FMT_GOLD_CITY,FMT,Makkah Clock Tower - A Fairmont Hotel,Double,2,Fairmont Gold City Double (2 guests),BB
+FMT_GOLD_CITY_3P,FMT_GOLD_CITY,FMT,Makkah Clock Tower - A Fairmont Hotel,Triple,3,Fairmont Gold City Triple (3 guests),BB
+RAF_SIG_CITY_2P,RAF_SIG_CITY,RAF,Raffles Palace Makkah,Double,2,Signature Suite City Double (2 guests),BB
+RAF_SIG_CITY_3P,RAF_SIG_CITY,RAF,Raffles Palace Makkah,Triple,3,Signature Suite City Triple (3 guests),BB
+RAF_SIG_HARAM_2P,RAF_SIG_HARAM,RAF,Raffles Palace Makkah,Double,2,Signature Suite Haram Double (2 guests),BB
+RAF_SIG_HARAM_3P,RAF_SIG_HARAM,RAF,Raffles Palace Makkah,Triple,3,Signature Suite Haram Triple (3 guests),BB
+RAF_DLX_KAABA_2P,RAF_DLX_KAABA,RAF,Raffles Palace Makkah,Double,2,Deluxe Partial Kaaba Double (2 guests),BB
+RAF_DLX_KAABA_3P,RAF_DLX_KAABA,RAF,Raffles Palace Makkah,Triple,3,Deluxe Partial Kaaba Triple (3 guests),BB
+RAF_PRES_CITY_2P,RAF_PRES_CITY,RAF,Raffles Palace Makkah,Double,2,Presidential Suite City (2BR) Double (2 guests),BB
+RAF_PRES_CITY_3P,RAF_PRES_CITY,RAF,Raffles Palace Makkah,Triple,3,Presidential Suite City (2BR) Triple (3 guests),BB
+RAF_PRES_CITY_4P,RAF_PRES_CITY,RAF,Raffles Palace Makkah,Quad,4,Presidential Suite City (2BR) Quad (4 guests),BB
+RAF_PRES_HARAM_2P,RAF_PRES_HARAM,RAF,Raffles Palace Makkah,Double,2,Presidential Suite Haram (2BR) Double (2 guests),BB
+RAF_PRES_HARAM_3P,RAF_PRES_HARAM,RAF,Raffles Palace Makkah,Triple,3,Presidential Suite Haram (2BR) Triple (3 guests),BB
+RAF_PRES_HARAM_4P,RAF_PRES_HARAM,RAF,Raffles Palace Makkah,Quad,4,Presidential Suite Haram (2BR) Quad (4 guests),BB
+RAF_ROYAL_2P,RAF_ROYAL,RAF,Raffles Palace Makkah,Double,2,Royal Suite Double (2 guests),BB
+RAF_ROYAL_3P,RAF_ROYAL,RAF,Raffles Palace Makkah,Triple,3,Royal Suite Triple (3 guests),BB
+RAF_ROYAL_4P,RAF_ROYAL,RAF,Raffles Palace Makkah,Quad,4,Royal Suite Quad (4 guests),BB
+SWM_CITY_2P,SWM_CITY,SWM,Swissotel Al Maqam,Double,2,Classic Room City Double (2 guests),BB
+SWM_CITY_3P,SWM_CITY,SWM,Swissotel Al Maqam,Triple,3,Classic Room City Triple (3 guests),BB
+SWM_CITY_4P,SWM_CITY,SWM,Swissotel Al Maqam,Quad,4,Classic Room City Quad (4 guests),BB
+SWM_HARAM_2P,SWM_HARAM,SWM,Swissotel Al Maqam,Double,2,Classic Room Haram Double (2 guests),BB
+SWM_HARAM_3P,SWM_HARAM,SWM,Swissotel Al Maqam,Triple,3,Classic Room Haram Triple (3 guests),BB
+SWM_HARAM_4P,SWM_HARAM,SWM,Swissotel Al Maqam,Quad,4,Classic Room Haram Quad (4 guests),BB
+SWM_PARTIAL_KAABA_2P,SWM_PARTIAL_KAABA,SWM,Swissotel Al Maqam,Double,2,Classic room Partial Kaaba Double (2 guests),BB
+SWM_PARTIAL_KAABA_3P,SWM_PARTIAL_KAABA,SWM,Swissotel Al Maqam,Triple,3,Classic room Partial Kaaba Triple (3 guests),BB
+SWM_PARTIAL_KAABA_4P,SWM_PARTIAL_KAABA,SWM,Swissotel Al Maqam,Quad,4,Classic room Partial Kaaba Quad (4 guests),BB
+SWM_KAABA_PREM_2P,SWM_KAABA_PREM,SWM,Swissotel Al Maqam,Double,2,Classic Kaaba Premier Double (2 guests),BB
+SWM_KAABA_PREM_3P,SWM_KAABA_PREM,SWM,Swissotel Al Maqam,Triple,3,Classic Kaaba Premier Triple (3 guests),BB
+SWM_JS_CITY_2P,SWM_JS_CITY,SWM,Swissotel Al Maqam,Double,2,Junior suite City view Double (2 guests),BB
+SWM_JS_CITY_3P,SWM_JS_CITY,SWM,Swissotel Al Maqam,Triple,3,Junior suite City view Triple (3 guests),BB
+SWM_JS_CITY_4P,SWM_JS_CITY,SWM,Swissotel Al Maqam,Quad,4,Junior suite City view Quad (4 guests),BB
+SWM_JS_HARAM_2P,SWM_JS_HARAM,SWM,Swissotel Al Maqam,Double,2,Junior suite Haram view Double (2 guests),BB
+SWM_JS_HARAM_3P,SWM_JS_HARAM,SWM,Swissotel Al Maqam,Triple,3,Junior suite Haram view Triple (3 guests),BB
+SWM_JS_HARAM_4P,SWM_JS_HARAM,SWM,Swissotel Al Maqam,Quad,4,Junior suite Haram view Quad (4 guests),BB
+SWM_JS_KAABA_2P,SWM_JS_KAABA,SWM,Swissotel Al Maqam,Double,2,Junior suite Kaaba Double (2 guests),BB
+SWM_JS_KAABA_3P,SWM_JS_KAABA,SWM,Swissotel Al Maqam,Triple,3,Junior suite Kaaba Triple (3 guests),BB
+SWM_JS_KAABA_4P,SWM_JS_KAABA,SWM,Swissotel Al Maqam,Quad,4,Junior suite Kaaba Quad (4 guests),BB
+SWK_CITY_2P,SWK_CITY,SWK,Swissotel Makkah,Double,2,Classic Room City Double (2 guests),BB
+SWK_CITY_3P,SWK_CITY,SWK,Swissotel Makkah,Triple,3,Classic Room City Triple (3 guests),BB
+SWK_CITY_4P,SWK_CITY,SWK,Swissotel Makkah,Quad,4,Classic Room City Quad (4 guests),BB
+SWK_HARAM_2P,SWK_HARAM,SWK,Swissotel Makkah,Double,2,Classic Room Haram Double (2 guests),BB
+SWK_HARAM_3P,SWK_HARAM,SWK,Swissotel Makkah,Triple,3,Classic Room Haram Triple (3 guests),BB
+SWK_HARAM_4P,SWK_HARAM,SWK,Swissotel Makkah,Quad,4,Classic Room Haram Quad (4 guests),BB
+SWK_PARTIAL_KAABA_2P,SWK_PARTIAL_KAABA,SWK,Swissotel Makkah,Double,2,Classic room Partial Kaaba Double (2 guests),BB
+SWK_PARTIAL_KAABA_3P,SWK_PARTIAL_KAABA,SWK,Swissotel Makkah,Triple,3,Classic room Partial Kaaba Triple (3 guests),BB
+SWK_PARTIAL_KAABA_4P,SWK_PARTIAL_KAABA,SWK,Swissotel Makkah,Quad,4,Classic room Partial Kaaba Quad (4 guests),BB
+SWK_KAABA_PREM_2P,SWK_KAABA_PREM,SWK,Swissotel Makkah,Double,2,Classic Kaaba Premier Double (2 guests),BB
+SWK_KAABA_PREM_3P,SWK_KAABA_PREM,SWK,Swissotel Makkah,Triple,3,Classic Kaaba Premier Triple (3 guests),BB
+SWK_JS_CITY_2P,SWK_JS_CITY,SWK,Swissotel Makkah,Double,2,Junior suite City view Double (2 guests),BB
+SWK_JS_CITY_3P,SWK_JS_CITY,SWK,Swissotel Makkah,Triple,3,Junior suite City view Triple (3 guests),BB
+SWK_JS_CITY_4P,SWK_JS_CITY,SWK,Swissotel Makkah,Quad,4,Junior suite City view Quad (4 guests),BB
+SWK_JS_HARAM_2P,SWK_JS_HARAM,SWK,Swissotel Makkah,Double,2,Junior suite Haram view Double (2 guests),BB
+SWK_JS_HARAM_3P,SWK_JS_HARAM,SWK,Swissotel Makkah,Triple,3,Junior suite Haram view Triple (3 guests),BB
+SWK_JS_HARAM_4P,SWK_JS_HARAM,SWK,Swissotel Makkah,Quad,4,Junior suite Haram view Quad (4 guests),BB
+SWK_JS_KAABA_2P,SWK_JS_KAABA,SWK,Swissotel Makkah,Double,2,Junior suite Kaaba Double (2 guests),BB
+SWK_JS_KAABA_3P,SWK_JS_KAABA,SWK,Swissotel Makkah,Triple,3,Junior suite Kaaba Triple (3 guests),BB
+SWK_JS_KAABA_4P,SWK_JS_KAABA,SWK,Swissotel Makkah,Quad,4,Junior suite Kaaba Quad (4 guests),BB

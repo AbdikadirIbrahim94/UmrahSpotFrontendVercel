@@ -1,0 +1,106 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Add Season Code</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/portal/season/add">Season Codes</a></li>
+        <li class="breadcrumb-item active">Add Season Code</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Add Season Code</h5>
+
+            <form action="/portal/season/create" method="POST">
+                <div class="row">
+                    <div class="col-sm-8">
+                                    <!-- Season Code ID -->
+                        <div class="form-floating mb-4">
+                            <input 
+                            type="text" 
+                            id="season_code_id" 
+                            name="season_code_id" 
+                            class="form-control border-gray" 
+                            placeholder="Season Code ID (required)"
+                            required
+                            >
+                            <label for="season_code_id">Season Code ID (required)</label>
+                        </div>
+
+
+                        <!-- Name -->
+                        <div class="form-floating mb-4">
+                            <input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            class="form-control border-gray" 
+                            placeholder="Season Name (required)"
+                            required
+                            >
+                            <label for="name">Season Name (required)</label>
+                        </div>
+                        
+                        <div class="form-floating mb-4">
+                                <textarea class="form-control border-gray" id="description" rows="4" name="description" style="height: 100px;"></textarea>
+                                <label class="form-label" for="description">Description</label>
+                            </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-outline mb-4">
+                            <label class="form-label">Start Date</label>
+                            <input 
+                            type="date" 
+                            name="start_date" 
+                            class="form-control" 
+                            required
+                            >
+                        </div>
+
+                        <!-- End Date -->
+                        <div class="form-outline mb-4">
+                            <label class="form-label">End Date</label>
+                            <input 
+                            type="date" 
+                            name="end_date" 
+                            class="form-control" 
+                            required
+                            >
+                        </div>
+
+                    </div>
+                </div>
+             
+
+              <!-- Start Date -->
+              
+
+              <button type="submit" class="btn btn-primary btn-block mb-4">
+                Create Season Code
+              </button>
+
+              <div id="spiner_loading"></div>
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main><!-- End #main -->
+
+<%- include('../partials/components/footer.ejs'); %>

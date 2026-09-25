@@ -1,0 +1,102 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+<%- include('../partials/components/sidebar.ejs'); %>
+
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Rooms</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/portal/room">Room</a></li>
+          <li class="breadcrumb-item"><a class="active" href="/portal/room">Room List</a></li>
+        </ol>
+      </nav>
+    </div>
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Rooms</h5>
+
+              <table class="table datatable" id="room_table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">ROOM ID</th>
+                    <th scope="col">Hotel Id</th>
+                    <th scope="col">Hotel Name</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">View</th>
+                    <th scope="col">Room Type</th>
+                    <th scope="col">Area</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% let index = 1 %>
+                    <% rooms.forEach((item) => { %>
+                        <tr>
+                            <td><%= index %></td>
+                            <td>
+                                <%= item.room_name_id %>
+                            </td>
+                            <td>
+                                <%= item.hotel ? item.hotel.name_id : "" %>
+                            </td>
+                            <td>
+                                <%= item.hotel ? item.hotel.name : "" %>
+                            </td>
+                            <td>
+                                <%= item.name %>
+                            </td>
+                            <td>
+                                <%= item.view_type %>
+                            </td>
+                            <td>
+                                <%= item.room_type ? item.room_type.name : "" %>
+                            </td>
+                            <td>
+                                <%= item.size_sqft %> sq ft
+                            </td>
+                            <td>
+                                <img src="<%= item.image_url %>" alt="room" style="width:60px;height:40px;object-fit:cover;" />
+                            </td>
+                            <td>
+                                <a href="/portal/room/<%= item.id %>/edit" class="btn btn-sm btn-primary">Edit</a>
+                                <form action="/portal/room/<%= item.id %>/delete" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% index++ %>
+                    <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+ 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <%- include('../partials/components/footer.ejs'); %>
+
+
+<script>
+   
+</script>
+
+</body>
+
+</html>

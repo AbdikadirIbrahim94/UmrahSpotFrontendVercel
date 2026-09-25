@@ -1,0 +1,254 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+
+<style>
+  .image-container {
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+  }
+  .rounded-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .remove-field {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    font-size: 12px;
+  }
+</style>
+
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Room Options</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/portal/Room">Room</a></li>
+        <li class="breadcrumb-item active">Room Options</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="d-flex">
+          <div class="ms-5">
+          <!-- <a href="/portal/room-option/add" class="btn btn-sm btn-primary">Add Room Occupancy Option</a> -->
+        </div>
+    </div>
+
+    <div class="row" id="show_complete_video">
+           <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Rooms Occupancy</h5>
+
+              <table class="table datatable" id="room_table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Hotel</th>
+                    <th scope="col">Room Option Id</th>
+                    <th scope="col">Room Id</th>
+                    <th scope="col">Occupancy Name</th>
+                    <th scope="col">Guest Count</th>
+                    <th scope="col">Room Left</th>
+                    <th scope="col">Base Plan</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% if (occupancies.length === 0) { %>
+                        <tr>
+                          <td colspan="6" class="text-center">No data available</td>
+                        </tr>
+                    <% } %>
+
+                    <% occupancies.forEach((item, index) => { %>
+                      <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= item.room ? item.room.hotel.name : ""  %></td>
+                        <td><%= item.room_option_id %></td>
+                        <td><%= item.room ? item.room.room_name_id : "" %></td>
+                        <td><%= item.occupancy %></td>
+                        <td><%= item.max_guests %></td>
+                        <td><%= item.rooms_left %></td>
+                        <td><%= item.base_meal_plan || "-" %></td>
+                        <td>
+                          <a href="/portal/room/occupancy/<%= item.id %>" class="btn btn-sm btn-primary">
+                            Edit
+                          </a>
+                         
+                          <form action="/portal/room/occupancy/delete/<%= item.id %>" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-danger delete_room_occupancy" data-id="<%= item.id %>">Delete</button>
+                          </form>
+                        </td>
+                      </tr>
+                    <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+       </div>
+  </section>
+</main><!-- End #main -->
+
+<%- include('../partials/components/footer.ejs'); %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+   $(document).on("click", ".delete_room_occupancy", function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        var id = $(this).data("id");
+        var current_ele = $(this);
+        $.ajax({
+          type: "POST", // Change to "POST" or "PUT" if needed
+          url: `/portal/room/occupancy/delete/${id}`, // Replace with your API endpoint
+          success: function (response) {
+            // Handle the success response here
+            console.log("Success:", response);
+            if (response.status == "success") {
+              Swal.fire(
+                'Deleted!',
+                'city has been deleted.',
+                'success'
+              )
+              current_ele.parent().parent().hide();
+              location.reload();
+            } else {
+              console.log("some error occure =====");
+            }
+          },
+          error: function (error) {
+            // Handle the error response here
+            console.log("Error:", error);
+          },
+        });
+      }
+    })
+  });
+
+document.addEventListener("DOMContentLoaded", () => {
+ 
+
+  const galleryInput = document.getElementById("gallery_images_input");
+  const previewContainer = document.getElementById("gallery_preview_container");
+  const deletedPhotosInput = document.getElementById("deleted_photos");
+  const deletedExtrasInput = document.getElementById("deleted_extras");
+  let deletedPhotos = [];
+  let deletedExtras = [];
+
+  // Store selected files in a DataTransfer object
+  let selectedFiles = new DataTransfer();
+
+  // Handle existing gallery image removal
+  document.querySelectorAll(".remove-existing-image").forEach(btn => {
+    btn.addEventListener("click", function() {
+      const photoId = this.dataset.photoId;
+      deletedPhotos.push(photoId);
+      deletedPhotosInput.value = deletedPhotos.join(",");
+      this.closest(".image-container").remove();
+      console.log("Marked photo for deletion:", photoId);
+    });
+  });
+
+  // Handle thumbnail removal
+  const removeThumbnailBtn = document.getElementById("remove_thumbnail_btn");
+  const removeThumbnailInput = document.getElementById("remove_thumbnail");
+  const thumbnailPreview = document.getElementById("thumbnail_preview");
+  
+  if (removeThumbnailBtn) {
+    removeThumbnailBtn.addEventListener("click", () => {
+      removeThumbnailInput.value = "1";
+      thumbnailPreview.innerHTML = "";
+      console.log("Marked thumbnail for deletion");
+    });
+  }
+
+  // Gallery preview with multiple file support
+  galleryInput?.addEventListener("change", (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    Array.from(files).forEach((file) => {
+      selectedFiles.items.add(file);
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imgDiv = document.createElement("div");
+        imgDiv.className = "image-container new-image";
+        imgDiv.dataset.filename = file.name;
+        imgDiv.innerHTML = `
+          <img src="${e.target.result}" alt="Preview" class="rounded-image" />
+          <button class="btn btn-danger remove-field" type="button">X</button>
+        `;
+        previewContainer.appendChild(imgDiv);
+
+        imgDiv.querySelector("button").addEventListener("click", () => {
+          const newFileList = new DataTransfer();
+          for (let i = 0; i < selectedFiles.files.length; i++) {
+            if (selectedFiles.files[i].name !== file.name) {
+              newFileList.items.add(selectedFiles.files[i]);
+            }
+          }
+          selectedFiles = newFileList;
+          galleryInput.files = selectedFiles.files;
+          imgDiv.remove();
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    galleryInput.files = selectedFiles.files;
+    console.log(`Total new gallery images: ${selectedFiles.files.length}`);
+  });
+
+  // Thumbnail preview
+  const fileInput = document.getElementById("thumbnail_input");
+  if (fileInput) {
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      // Reset the remove flag when new image is selected
+      removeThumbnailInput.value = "0";
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        thumbnailPreview.innerHTML = `
+          <img src="${e.target.result}" alt="Thumbnail" class="rounded-image" />
+          <button class="btn btn-danger remove-field" type="button">X</button>
+        `;
+        thumbnailPreview.querySelector("button").addEventListener("click", () => {
+          fileInput.value = "";
+          thumbnailPreview.innerHTML = "";
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+});
+</script>
+</body>
+</html>

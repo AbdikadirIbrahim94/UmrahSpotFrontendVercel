@@ -1,0 +1,10 @@
+{
+  "watch": ["src"],
+  "ext": "ts,json",
+  "ignore": ["dist"],
+  "env": {
+    "TS_NODE_PROJECT": "./tsconfig.json",
+    "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"commonjs\"}"
+  },
+  "exec": "node -r ts-node/register/transpile-only src/index.ts"
+}

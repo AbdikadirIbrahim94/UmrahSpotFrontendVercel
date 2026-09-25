@@ -1,0 +1,4 @@
+from_currency,to_currency,market_rate,UmrahSpot_rate
+SAR,USD,0.26664825,0.27664825
+SAR,EUR,0.2306383,0.2406383
+SAR,GBP,0.203397304,0.213397304

@@ -1,0 +1,157 @@
+<%- include('../partials/components/header.ejs'); %>
+<%- include('../partials/components/top-bar.ejs'); %>
+<%- include('../partials/components/sidebar.ejs'); %>
+
+<main id="main" class="main">
+
+  <div class="pagetitle mb-3">
+    <h1>Admin - Group Bookings Management</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/portal/admin">Admin</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Booking List</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body pt-3">
+            
+            <% if (typeof error !== 'undefined' && error) { %>
+              <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> <%= error %>
+              </div>
+            <% } %>
+
+            <div class="table-responsive mt-3">
+              <table class="table table-striped table-bordered align-middle" id="bookings_table">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col" style="width: 5%;">ID</th>
+                    <th scope="col" style="width: 15%;">Group Name</th>
+                    <th scope="col" style="width: 20%;">Hotels (Mak / Mad)</th>
+                    <th scope="col" style="width: 20%;">Dates (Mak / Mad)</th>
+                    <th scope="col" style="width: 15%;">Capacity</th>
+                    <th scope="col" style="width: 10%;">Status</th>
+                    <th scope="col" style="width: 15%; text-align: center;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (bookings && bookings.length > 0) { %>
+                    <% bookings.forEach((booking) => { %>
+                      <tr>
+                        <td class="fw-bold text-secondary">#<%= booking.id %></td>
+
+                        <td>
+                          <strong><%= booking.groupName %></strong><br>
+                          <small class="text-muted">Created: <%= new Date(booking.created_at).toLocaleDateString() %></small>
+                        </td>
+
+                        <td>
+                          <div class="small">
+                            <strong>Mak:</strong> <%= booking.makkahHotelName || 'N/A' %><br>
+                            <strong>Mad:</strong> <%= booking.madinahHotelName || 'N/A' %>
+                          </div>
+                        </td>
+
+                        <td>
+                          <div class="small">
+                            <strong>Mak:</strong> <%= booking.dates?.makkahIn || 'N/A' %> to <%= booking.dates?.makkahOut || 'N/A' %><br>
+                            <strong>Mad:</strong> <%= booking.dates?.madinahIn || 'N/A' %> to <%= booking.dates?.madinahOut || 'N/A' %>
+                          </div>
+                        </td>
+
+                        <td>
+                          <div class="small">
+                            <strong>Guests:</strong> <%= booking.totals?.totalPax || 0 %> | 
+                            <strong>Rooms:</strong> <%= booking.totals?.totalRooms || 0 %><br>
+                            <strong>Visa:</strong> <%= booking.services?.visa === 'yes' ? 'Yes' : 'No' %> | 
+                            <strong>Trans:</strong> <%= booking.services?.transport === 'yes' ? 'Yes' : 'No' %>
+                          </div>
+                        </td>
+
+                        <td>
+                          <% if (booking.status === 'confirmed' || booking.status === 'active') { %>
+                            <span class="badge bg-success">Confirmed</span>
+                          <% } else if (booking.status === 'pending') { %>
+                            <span class="badge bg-warning text-dark">Pending</span>
+                          <% } else { %>
+                            <span class="badge bg-secondary"><%= booking.status || 'N/A' %></span>
+                          <% } %>
+                        </td>
+
+                        <td class="text-center">
+                          <div class="btn-group" role="group">
+                            <a href="/portal/agent/<%= booking.id %>/view" class="btn btn-sm btn-primary">View</a>
+                            <button type="button" class="btn btn-sm btn-danger delete_booking" data-id="<%= booking.id %>">Cancel</button>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  <% } else if (!error) { %>
+                    <tr>
+                      <td colspan="7" class="text-center py-4 text-muted">
+                        No bookings available in the system.
+                      </td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<%- include('../partials/components/footer.ejs'); %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  $(document).on("click", ".delete_booking", function (e) {
+    e.preventDefault();
+    var current_ele = $(this);
+    var id = current_ele.data("id");
+
+    Swal.fire({
+      title: 'Cancel Booking #' + id + '?',
+      text: "This action cannot be undone.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#0d6efd',
+      cancelButtonColor: '#dc3545',
+      confirmButtonText: 'Confirm Cancellation'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          type: "POST",
+          url: `/portal/agent/booking/${id}/delete/`,
+          success: function (response) {
+            if (response.status == "success" || response.status == true) {
+              Swal.fire('Canceled', 'Booking has been removed.', 'success');
+              current_ele.closest("tr").fadeOut(300, function() {
+                $(this).remove();
+              });
+            } else {
+              Swal.fire('Error', 'Failed to cancel the booking.', 'error');
+            }
+          },
+          error: function (error) {
+            Swal.fire('Error', 'Server communication failed.', 'error');
+          },
+        });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

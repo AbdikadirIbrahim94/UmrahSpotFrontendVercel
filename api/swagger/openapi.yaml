@@ -1,0 +1,804 @@
+openapi: 3.0.3
+info:
+  title: UmrahSpot Hotel APIs
+  version: "1.0.0"
+  description: >
+    Backend endpoints that power the hotel listing, detail, room selection,
+    and booking checkout flows.
+servers:
+  - url: https://your-domain.com/api
+    description: Production
+  - url: http://localhost:8000/api
+    description: Local development
+tags:
+  - name: Hotels
+    description: Hotel catalogue and detail endpoints
+  - name: Rooms
+    description: Room availability and configuration
+  - name: Bookings
+    description: Booking checkout flow
+paths:
+  /get-hotels:
+    get:
+      tags:
+        - Hotels
+      summary: List hotels
+      description: >
+        Returns a filtered, paginated list of hotels with pricing, distance, and
+        high-level room information tailored for the search results page.
+      parameters:
+        - in: query
+          name: city
+          schema:
+            type: string
+          description: Filter by city name (case-insensitive partial match).
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Free-text search on hotel name and description.
+        - in: query
+          name: checkIn
+          schema:
+            type: string
+            format: date
+          description: Optional check-in date used for stay metadata.
+        - in: query
+          name: checkOut
+          schema:
+            type: string
+            format: date
+          description: Optional check-out date used for stay metadata.
+        - in: query
+          name: priceMin
+          schema:
+            type: number
+          description: Minimum nightly room price.
+        - in: query
+          name: priceMax
+          schema:
+            type: number
+          description: Maximum nightly room price.
+        - in: query
+          name: distanceMin
+          schema:
+            type: number
+            format: float
+          description: Minimum distance to Al-Haram in meters.
+        - in: query
+          name: distanceMax
+          schema:
+            type: number
+            format: float
+          description: Maximum distance to Al-Haram in meters.
+        - in: query
+          name: starRatings
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+          description: >
+            Comma-separated list of rating bands (e.g. `4-5,3-3.9`).
+        - in: query
+          name: amenities
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AmenityFilter'
+          style: form
+          explode: false
+          description: >
+            Comma-separated list of amenity filters such as
+            `breakfast_included`, `free_shuttle`, `haram_view`,
+            `wheelchair_friendly`, `wifi`, `parking`, `family_room`,
+            `room_service`.
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum:
+              - price_asc
+              - price_desc
+              - rating_desc
+              - distance_asc
+          description: Sort order (defaults to `price_asc`).
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: 1-based page index.
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+          description: Number of results per page.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelListResponse'
+        "500":
+          $ref: '#/components/responses/InternalError'
+  /get-hotels/{hotelId}:
+    get:
+      tags:
+        - Hotels
+      summary: Get hotel detail
+      description: Returns the full detail payload required for the hotel detail page.
+      parameters:
+        - $ref: '#/components/parameters/HotelIdPathParam'
+        - in: query
+          name: checkIn
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: checkOut
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Hotel found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelDetailResponse'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+  /get-hotels/{hotelId}/rooms:
+    get:
+      tags:
+        - Rooms
+      summary: List rooms for a hotel
+      description: >
+        Returns the room cards, extras, and stay summary for the room-selection step.
+      parameters:
+        - $ref: '#/components/parameters/HotelIdPathParam'
+        - in: query
+          name: checkIn
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: checkOut
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Rooms returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelRoomsResponse'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+  /get-hotels/{hotelId}/bookings:
+    post:
+      tags:
+        - Bookings
+      summary: Create booking
+      description: >
+        Finalises the checkout form by creating/updating the guest profile and
+        storing a booking record. Returns booking, user, room, and extras summaries.
+      parameters:
+        - $ref: '#/components/parameters/HotelIdPathParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookingRequest'
+      responses:
+        "201":
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBookingResponse'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+components:
+  parameters:
+    HotelIdPathParam:
+      name: hotelId
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: Numeric identifier of the hotel.
+  responses:
+    BadRequest:
+      description: Invalid request payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string
+      required:
+        - success
+        - message
+    AmenityFilter:
+      type: string
+      enum:
+        - breakfast_included
+        - free_shuttle
+        - haram_view
+        - wheelchair_friendly
+        - wifi
+        - parking
+        - family_room
+        - room_service
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - page
+        - pageSize
+        - total
+        - totalPages
+    HotelListItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        distance:
+          type: object
+          properties:
+            meters:
+              type: number
+              nullable: true
+            minutesEstimate:
+              type: integer
+              nullable: true
+            label:
+              type: string
+              nullable: true
+        rating:
+          type: number
+          format: float
+        reviewCount:
+          type: integer
+        price:
+          type: object
+          properties:
+            currency:
+              type: string
+            current:
+              type: number
+              nullable: true
+            original:
+              type: number
+              nullable: true
+            perNight:
+              type: number
+              nullable: true
+            hasDiscount:
+              type: boolean
+        badges:
+          type: object
+          properties:
+            distanceToHaram:
+              type: string
+              nullable: true
+        amenities:
+          type: object
+          additionalProperties:
+            type: boolean
+        photos:
+          type: array
+          items:
+            type: string
+        rooms:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              pricePerNight:
+                type: number
+              refundable:
+                type: boolean
+              breakfastIncluded:
+                type: boolean
+              viewType:
+                type: string
+                nullable: true
+              imageUrl:
+                type: string
+                nullable: true
+              photos:
+                type: array
+                items:
+                  type: string
+        reviews:
+          type: object
+          properties:
+            average:
+              type: number
+            count:
+              type: integer
+        ctas:
+          type: object
+          properties:
+            bookNowUrl:
+              type: string
+              nullable: true
+            whatsappUrl:
+              type: string
+              nullable: true
+        stay:
+          type: object
+          properties:
+            checkIn:
+              type: string
+              format: date
+              nullable: true
+            checkOut:
+              type: string
+              format: date
+              nullable: true
+            nights:
+              type: integer
+              nullable: true
+      required:
+        - id
+        - name
+        - rating
+        - reviewCount
+        - price
+        - amenities
+        - photos
+        - rooms
+        - reviews
+        - ctas
+        - stay
+    HotelListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/HotelListItem'
+        meta:
+          type: object
+          properties:
+            appliedFilters:
+              type: object
+            checkIn:
+              type: string
+              format: date
+              nullable: true
+            checkOut:
+              type: string
+              format: date
+              nullable: true
+      required:
+        - success
+        - pagination
+        - data
+        - meta
+    HotelDetailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/HotelListItem'
+            - type: object
+              properties:
+                address:
+                  type: string
+                  nullable: true
+                gallery:
+                  type: object
+                  properties:
+                    hero:
+                      type: string
+                      nullable: true
+                    photos:
+                      type: array
+                      items:
+                        type: string
+                offers:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DisplayItem'
+                services:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DisplayItem'
+                nearbyPlaces:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DisplayItem'
+                descriptionLong:
+                  type: string
+                  nullable: true
+                policies:
+                  type: object
+                  properties:
+                    child:
+                      type: string
+                      nullable: true
+                    cancellation:
+                      type: string
+                      nullable: true
+                reviewsList:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      rating:
+                        type: integer
+                      comment:
+                        type: string
+                        nullable: true
+                      createdAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      userId:
+                        type: integer
+                        nullable: true
+      required:
+        - success
+        - data
+    HotelRoomsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            hotel:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                city:
+                  type: string
+                  nullable: true
+            stay:
+              type: object
+              properties:
+                checkIn:
+                  type: string
+                  format: date
+                  nullable: true
+                checkOut:
+                  type: string
+                  format: date
+                  nullable: true
+                nights:
+                  type: integer
+                  nullable: true
+            rooms:
+              type: array
+              items:
+                $ref: '#/components/schemas/RoomCard'
+      required:
+        - success
+        - data
+    RoomCard:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        heroImage:
+          type: string
+          nullable: true
+        photos:
+          type: array
+          items:
+            type: string
+        capacity:
+          type: object
+          properties:
+            maxGuests:
+              type: integer
+              nullable: true
+            beds:
+              type: string
+              nullable: true
+            sizeSqft:
+              type: integer
+              nullable: true
+        viewType:
+          type: string
+          nullable: true
+        breakfastIncluded:
+          type: boolean
+        price:
+          type: object
+          properties:
+            currency:
+              type: string
+            perNight:
+              type: number
+            total:
+              type: number
+            nights:
+              type: integer
+              nullable: true
+        cancellation:
+          type: object
+          properties:
+            refundable:
+              type: boolean
+            freeCancellationHours:
+              type: integer
+              nullable: true
+        extras:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              price:
+                type: number
+              currency:
+                type: string
+              quantity:
+                type: integer
+                minimum: 1
+                default: 1
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - name
+        - breakfastIncluded
+        - price
+        - cancellation
+        - extras
+        - tags
+    DisplayItem:
+      type: object
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        value:
+          type: string
+          nullable: true
+    CreateBookingRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - roomId
+        - checkIn
+        - checkOut
+        - agreeToTerms
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+        roomId:
+          type: integer
+        checkIn:
+          type: string
+          format: date
+        checkOut:
+          type: string
+          format: date
+        guests:
+          type: integer
+          nullable: true
+        extras:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              quantity:
+                type: integer
+                minimum: 1
+                default: 1
+        arrivalTime:
+          type: string
+          nullable: true
+        whatsappOptIn:
+          type: boolean
+          nullable: true
+        agreeToTerms:
+          type: boolean
+        paymentStatus:
+          type: string
+          enum:
+            - pending
+            - paid
+            - failed
+        totalPrice:
+          type: number
+          nullable: true
+          description: >
+            Optional client-side total; validated against the backend calculation.
+        notes:
+          type: string
+          nullable: true
+    CreateBookingResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            booking:
+              type: object
+              properties:
+                id:
+                  type: integer
+                reservationNumber:
+                  type: string
+                bookingNumber:
+                  type: string
+                status:
+                  type: string
+                paymentStatus:
+                  type: string
+                checkIn:
+                  type: string
+                  format: date
+                checkOut:
+                  type: string
+                  format: date
+                nights:
+                  type: integer
+                totalPrice:
+                  type: number
+            user:
+              type: object
+              properties:
+                id:
+                  type: integer
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                phoneNumber:
+                  type: string
+                  nullable: true
+                country:
+                  type: string
+                  nullable: true
+            room:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                pricePerNight:
+                  type: number
+                currency:
+                  type: string
+            extras:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  price:
+                    type: number
+                  quantity:
+                    type: integer
+            meta:
+              type: object
+              properties:
+                arrivalTime:
+                  type: string
+                  nullable: true
+                whatsappOptIn:
+                  type: boolean
+                notes:
+                  type: string
+                  nullable: true
+      required:
+        - success
+        - data
+
